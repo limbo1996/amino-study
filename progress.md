@@ -32,6 +32,7 @@
   - 实现 CSV 导入与测试
   - 实现 SQLite 初始化与导入逻辑
   - 接入启动初始化与配置路径
+  - 初始化项目结构与路径测试
 - 创建/修改的文件：
   - docs/superpowers/specs/2026-05-13-amino-learning-app-design.md
   - tests/test_scheduler.py
@@ -48,6 +49,10 @@
   - app/bootstrap.py
   - app/config.py
   - tests/test_bootstrap.py
+  - tests/test_config_paths.py
+  - data/.gitkeep
+  - assets/.gitkeep
+  - app/screens/.gitkeep
 
 ## 测试结果
 | 测试 | 输入 | 预期结果 | 实际结果 | 状态 |
@@ -57,6 +62,7 @@
 | CSV 导入单测 | python -m unittest tests/test_data_loader.py | 通过 | 通过 | pass |
 | SQLite 导入单测 | python -m unittest tests/test_db_seed.py | 通过 | 通过 | pass |
 | 启动初始化单测 | python -m unittest tests/test_bootstrap.py | 通过 | 通过 | pass |
+| 配置路径单测 | python -m unittest tests/test_config_paths.py | 通过 | 通过 | pass |
 
 ## 错误日志
 | 时间戳 | 错误 | 尝试次数 | 解决方案 |
