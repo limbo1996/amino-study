@@ -10,6 +10,11 @@ except ModuleNotFoundError:
 
 class AminoStudyApp(App):
     def build(self):
+        from app.bootstrap import bootstrap_storage
+        from app.config import CSV_PATH, DB_PATH
+
+        bootstrap_storage(DB_PATH, CSV_PATH)
+
         if Label is None:
             return "Amino Study App"
         return Label(text="Amino Study App")
