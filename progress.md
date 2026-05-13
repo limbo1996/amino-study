@@ -27,10 +27,12 @@
   - 生成设计文档草案
   - 用户已确认设计文档
   - 编写调度逻辑测试并实现最小逻辑
+  - 清理 __pycache__ 并更新忽略规则
 - 创建/修改的文件：
   - docs/superpowers/specs/2026-05-13-amino-learning-app-design.md
   - tests/test_scheduler.py
   - app/services/scheduler.py
+  - .gitignore
 
 ## 测试结果
 | 测试 | 输入 | 预期结果 | 实际结果 | 状态 |
