@@ -35,6 +35,7 @@
   - 初始化项目结构与路径测试
   - 实现学习调度持久化逻辑
   - 实现计划构建与出题服务
+  - 实现学习会话服务
 - 创建/修改的文件：
   - docs/superpowers/specs/2026-05-13-amino-learning-app-design.md
   - tests/test_scheduler.py
@@ -61,6 +62,8 @@
   - tests/test_plan_service.py
   - app/services/quiz.py
   - tests/test_quiz_service.py
+  - app/services/session.py
+  - tests/test_session_service.py
 
 ## 测试结果
 | 测试 | 输入 | 预期结果 | 实际结果 | 状态 |
@@ -74,6 +77,7 @@
 | 学习仓库单测 | python -m unittest tests/test_learning_repo.py | 通过 | 通过 | pass |
 | 计划服务单测 | python -m unittest tests/test_plan_service.py | 通过 | 通过 | pass |
 | 出题服务单测 | python -m unittest tests/test_quiz_service.py | 通过 | 通过 | pass |
+| 会话服务单测 | python -m unittest tests/test_session_service.py | 通过 | 通过 | pass |
 
 ## 错误日志
 | 时间戳 | 错误 | 尝试次数 | 解决方案 |
