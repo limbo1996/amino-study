@@ -35,7 +35,7 @@ class TestSessionService(unittest.TestCase):
             init_db(db_path)
             self._seed_amino_acids(db_path, 6)
 
-            session = build_session(db_path, now=now)
+            session = build_session(db_path, now=now, rng_seed=1)
 
             self.assertGreaterEqual(len(session["questions"]), 1)
             self.assertIn("plan", session)
@@ -52,6 +52,8 @@ class TestSessionService(unittest.TestCase):
 
             record_session_answer(
                 db_path,
+                plan_id=session["plan"]["id"],
+                question_type=question["type"],
                 amino_id=question["amino_id"],
                 is_correct=False,
                 now=now,

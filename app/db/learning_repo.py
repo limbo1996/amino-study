@@ -32,6 +32,25 @@ def get_or_create_daily_plan(db_path: Path, *, date: str, new_quota: int = 5) ->
         return _plan_row_to_dict(row)
 
 
+def increment_plan_counts(
+    db_path: Path,
+    *,
+    plan_id: int,
+    new_done: int = 0,
+    review_done: int = 0,
+) -> None:
+    with sqlite3.connect(db_path) as conn:
+        conn.execute(
+            """
+            UPDATE daily_plan
+            SET new_done = new_done + ?, review_done = review_done + ?
+            WHERE id = ?
+            """,
+            (new_done, review_done, plan_id),
+        )
+        conn.commit()
+
+
 def seed_learning_state(db_path: Path, *, now: datetime) -> None:
     with sqlite3.connect(db_path) as conn:
         ids = conn.execute("SELECT id FROM amino_acids").fetchall()
