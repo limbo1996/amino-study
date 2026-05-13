@@ -26,13 +26,16 @@
 - 执行的操作：
   - 生成设计文档草案
   - 用户已确认设计文档
+  - 编写调度逻辑测试并实现最小逻辑
 - 创建/修改的文件：
   - docs/superpowers/specs/2026-05-13-amino-learning-app-design.md
+  - tests/test_scheduler.py
+  - app/services/scheduler.py
 
 ## 测试结果
 | 测试 | 输入 | 预期结果 | 实际结果 | 状态 |
 |------|------|---------|---------|------|
-|      |      |         |         |      |
+| scheduler 单测 | python -m unittest tests/test_scheduler.py | 通过 | 通过 | pass |
 
 ## 错误日志
 | 时间戳 | 错误 | 尝试次数 | 解决方案 |
