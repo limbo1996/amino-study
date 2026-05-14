@@ -123,8 +123,27 @@ class AminoStudyApp(App):
             height=48,
             background_color=(0.85, 0.5, 0.1, 1),
             color=(1, 1, 1, 1),
-            font_name="SpaceMono",
+            font_name="RedHatMono",
             font_size=16,
+        )
+
+        stats_label = Label(
+            text="New 0/5 | Reviews 0",
+            size_hint_y=None,
+            height=32,
+            font_name="RedHatMono",
+            font_size=14,
+            color=(0.7, 0.75, 0.8, 1),
+        )
+
+        reset_button = Button(
+            text="Reset progress",
+            size_hint_y=None,
+            height=40,
+            background_color=(0.2, 0.2, 0.2, 1),
+            color=(0.9, 0.9, 0.9, 1),
+            font_name="RedHatMono",
+            font_size=14,
         )
 
         def refresh_view():
@@ -166,6 +185,8 @@ class AminoStudyApp(App):
         root.add_widget(card)
         root.add_widget(next_button)
         root.add_widget(feedback_label)
+        root.add_widget(stats_label)
+        root.add_widget(reset_button)
 
         refresh_view()
         return root

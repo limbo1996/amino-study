@@ -40,6 +40,7 @@
   - 实现最小学习界面
   - 补充学习界面头部信息
   - 接入学习图片展示
+  - 实现统计/设置最小界面
   - 增强学习界面视觉样式
   - 更新 UI 设计技能规则
   - 安装 frontend-design skill
@@ -92,6 +93,7 @@
 | 会话服务单测 | python -m unittest tests/test_session_service.py | 通过 | 通过 | pass |
 | 计划计数单测 | python -m unittest tests/test_plan_counts.py | 通过 | 通过 | pass |
 | 学习界面单测 | python -m unittest tests/test_study_screen.py | 通过 | 通过 | pass |
+| 统计设置单测 | python -m unittest tests/test_stats_settings_screen.py | 通过 | 通过 | pass |
 
 ## 错误日志
 | 时间戳 | 错误 | 尝试次数 | 解决方案 |
