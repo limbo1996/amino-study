@@ -57,6 +57,10 @@ def load_study_state(db_path) -> StudyState:
     )
 
 
+def build_image_path(question: dict) -> str:
+    return question.get("image_path", "")
+
+
 def submit_answer(db_path, *, plan_id: int, question: dict, answer: str) -> bool:
     correct = answer.strip() == str(question.get("answer", "")).strip()
     record_session_answer(

@@ -2,6 +2,7 @@ import unittest
 
 from app.screens.study_screen import (
     build_header_text,
+    build_image_path,
     build_options_text,
     build_question_prompt,
 )
@@ -46,6 +47,13 @@ class TestStudyScreen(unittest.TestCase):
 
         self.assertIn("Plan 2026-05-13", header)
         self.assertIn("New 1/5", header)
+
+    def test_build_image_path_returns_value(self):
+        question = {"image_path": "/tmp/A.png"}
+
+        path = build_image_path(question)
+
+        self.assertEqual(path, "/tmp/A.png")
 
 
 if __name__ == "__main__":

@@ -29,6 +29,7 @@ def build_session(db_path: Path, *, now: datetime, rng_seed: int | None = None) 
                     "field": question["field"],
                     "options": question["options"],
                     "answer": question["answer"],
+                    "image_path": question["prompt"]["image_path"],
                 }
             )
 
@@ -40,6 +41,7 @@ def build_session(db_path: Path, *, now: datetime, rng_seed: int | None = None) 
                 "amino_id": item["id"],
                 "field": "abbr1",
                 "answer": fill_in["answer"],
+                "image_path": item["image_path"],
             }
         )
 

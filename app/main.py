@@ -6,6 +6,7 @@ try:
     from kivy.graphics import Color, Line, Rectangle
     from kivy.uix.boxlayout import BoxLayout
     from kivy.uix.button import Button
+    from kivy.uix.image import Image
     from kivy.uix.label import Label
     from kivy.uix.textinput import TextInput
 except ModuleNotFoundError:
@@ -19,6 +20,7 @@ class AminoStudyApp(App):
         from app.config import CSV_PATH, DB_PATH, REPO_ROOT
         from app.screens.study_screen import (
             build_header_text,
+            build_image_path,
             build_options_text,
             build_question_prompt,
             load_study_state,
@@ -95,6 +97,7 @@ class AminoStudyApp(App):
             font_size=16,
             color=(0.12, 0.12, 0.12, 1),
         )
+        image_view = Image(size_hint_y=None, height=160, allow_stretch=True, keep_ratio=True)
         answer_input = TextInput(
             text="",
             multiline=False,
@@ -136,6 +139,7 @@ class AminoStudyApp(App):
             )
             question_label.text = build_question_prompt(question)
             options_label.text = build_options_text(question)
+            image_view.source = build_image_path(question)
 
         def on_submit(_instance):
             question = state.current_question()
@@ -156,6 +160,7 @@ class AminoStudyApp(App):
 
         root.add_widget(header)
         card.add_widget(question_label)
+        card.add_widget(image_view)
         card.add_widget(options_label)
         card.add_widget(answer_input)
         root.add_widget(card)
