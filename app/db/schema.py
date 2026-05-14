@@ -15,7 +15,8 @@ def init_db(db_path: Path) -> None:
                 name_en TEXT NOT NULL,
                 abbr3 TEXT NOT NULL,
                 abbr1 TEXT NOT NULL,
-                image_path TEXT NOT NULL
+                image_path TEXT NOT NULL,
+                formula TEXT NOT NULL
             )
             """
         )

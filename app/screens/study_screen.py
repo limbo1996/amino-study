@@ -14,9 +14,9 @@ def build_header_text(plan: dict, *, index: int, total: int) -> str:
 
 
 def build_question_prompt(question: dict) -> str:
-    q_type = question.get("type", "")
-    field = question.get("field", "")
-    return f"{q_type} question: {field}"
+    name_cn = question.get("name_cn", "")
+    name_en = question.get("name_en", "")
+    return f"{name_cn} ({name_en})"
 
 
 def build_options_text(question: dict) -> str:
@@ -27,6 +27,14 @@ def build_options_text(question: dict) -> str:
     labels = ["A", "B", "C", "D"]
     lines = [f"{labels[i]}. {value}" for i, value in enumerate(options)]
     return "\n".join(lines)
+
+
+def build_options_list(question: dict) -> list[str]:
+    return list(question.get("options", []))
+
+
+def check_answer(question: dict, selected: str) -> bool:
+    return selected == question.get("answer", "")
 
 
 @dataclass
@@ -61,14 +69,12 @@ def build_image_path(question: dict) -> str:
     return question.get("image_path", "")
 
 
-def submit_answer(db_path, *, plan_id: int, question: dict, answer: str) -> bool:
-    correct = answer.strip() == str(question.get("answer", "")).strip()
+def submit_answer(db_path, *, plan_id: int, question: dict, is_correct: bool) -> None:
     record_session_answer(
         db_path,
         plan_id=plan_id,
         question_type=question.get("type", ""),
         amino_id=question.get("amino_id"),
-        is_correct=correct,
+        is_correct=is_correct,
         now=datetime.now(),
     )
-    return correct

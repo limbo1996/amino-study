@@ -24,6 +24,7 @@ def load_amino_acids(csv_path: Path) -> list[dict]:
                 "abbr3": row["三字缩写"].strip(),
                 "abbr1": row["单字缩写"].strip(),
                 "image_path": row["图片路径"].strip(),
+                "formula": row.get("分子式", "").strip(),
             }
             records.append(record)
 

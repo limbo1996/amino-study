@@ -114,11 +114,40 @@
 |--------|------|---------|---------|
 | 2026-05-14 | git clone https://github.com/anthropics/skills 失败（HTTP2 framing layer） | 1 | 使用 HTTP/1.1 shallow clone 解决 | 
 
+## 会话：2026-05-14
+
+### 阶段 6：Quiz 模式重构
+- **状态：** complete
+- **开始时间：** 2026-05-14
+- 执行的操作：
+  - 需求确认：展示中文名（英文名）+ 四选一缩写 + 对错反馈 + 结构式图片 + 下一题
+  - 设计方案 A：改造 quiz.py + session.py + study_screen.py + 测试
+  - 写入设计文档
+  - RED: quiz 随机格式测试、session 独立格式测试、study_screen 新增函数测试
+  - GREEN: quiz.py 每题独立随机格式、session.py 移除统一格式选择、study_screen.py 新增 build_options_list/check_answer、main.py Kivy UI 重构（4 选项按钮 + 对错反馈 + 结构式图片 + 下一题）
+  - 修复预存 bug：loader.py 分子式字段、repo.py 插入语句、测试 helper formula 字段
+  - 全量 35 测试通过
+- 创建/修改的文件：
+  - docs/superpowers/specs/2026-05-14-quiz-refactor-design.md
+  - app/services/quiz.py (no changes needed)
+  - app/services/session.py (移除 session 级格式选择)
+  - app/screens/study_screen.py (新增 build_options_list, check_answer)
+  - app/main.py (Kivy UI 重构：选项按钮 + 对错反馈 + 图片展示)
+  - app/data/loader.py (修复分子式字段)
+  - app/db/repo.py (修复插入公式列)
+  - tests/test_quiz_service.py (新增随机格式测试)
+  - tests/test_session_service.py (新增独立格式测试, 修复 helper)
+  - tests/test_study_screen.py (新增 options_list, check_answer 测试)
+  - tests/test_plan_service.py (修复 helper formula)
+  - tests/test_learning_repo.py (修复 helper formula)
+  - task_plan.md
+  - progress.md
+
 ## 五问重启检查
 | 问题 | 答案 |
 |------|------|
-| 我在哪里？ | 阶段 5 |
-| 我要去哪里？ | 完成交付 |
+| 我在哪里？ | 阶段 6 |
+| 我要去哪里？ | Quiz 模式重构完成 |
 | 目标是什么？ | 见 task_plan.md |
 | 我学到了什么？ | 见 findings.md |
 | 我做了什么？ | 见上方记录 |

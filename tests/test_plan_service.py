@@ -16,8 +16,8 @@ class TestPlanService(unittest.TestCase):
                 conn.execute(
                     """
                     INSERT INTO amino_acids
-                    (name_cn, name_en, abbr3, abbr1, image_path)
-                    VALUES (?, ?, ?, ?, ?)
+                    (name_cn, name_en, abbr3, abbr1, image_path, formula)
+                    VALUES (?, ?, ?, ?, ?, ?)
                     """,
                     (
                         f"中文{i}",
@@ -25,6 +25,7 @@ class TestPlanService(unittest.TestCase):
                         f"A{i}",
                         f"X{i}",
                         f"/tmp/{i}.png",
+                        "",
                     ),
                 )
             conn.commit()

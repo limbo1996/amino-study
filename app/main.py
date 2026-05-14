@@ -20,9 +20,9 @@ try:
     from kivy.graphics import Color, Line, Rectangle
     from kivy.uix.boxlayout import BoxLayout
     from kivy.uix.button import Button
+    from kivy.uix.gridlayout import GridLayout
     from kivy.uix.image import Image
     from kivy.uix.label import Label
-    from kivy.uix.textinput import TextInput
 except ModuleNotFoundError:
     App = object
     Label = None
@@ -35,8 +35,9 @@ class AminoStudyApp(App):
         from app.screens.study_screen import (
             build_header_text,
             build_image_path,
-            build_options_text,
+            build_options_list,
             build_question_prompt,
+            check_answer,
             load_study_state,
             submit_answer,
         )
@@ -80,7 +81,7 @@ class AminoStudyApp(App):
             padding=24,
             spacing=12,
             size_hint_y=None,
-            height=360,
+            height=540,
         )
         card.canvas.before.clear()
         with card.canvas.before:
@@ -104,46 +105,49 @@ class AminoStudyApp(App):
             font_size=26,
             color=(0.12, 0.12, 0.12, 1),
         )
-        options_label = Label(
+
+        options_grid = GridLayout(cols=2, spacing=8, size_hint_y=None, height=96)
+        option_buttons: list[Button] = []
+        labels = ["A", "B", "C", "D"]
+        for i in range(4):
+            btn = Button(
+                text="",
+                font_name="RedHatMono",
+                font_size=16,
+                background_color=(0.15, 0.4, 0.75, 1),
+                color=(1, 1, 1, 1),
+                size_hint_y=None,
+                height=44,
+            )
+            option_buttons.append(btn)
+            options_grid.add_widget(btn)
+
+        image_view = Image(size_hint_y=None, height=0, allow_stretch=True, keep_ratio=True)
+        image_view.opacity = 0
+
+        feedback_label = Label(
             text="",
             size_hint_y=None,
-            height=140,
+            height=0,
             font_name="RedHatMono",
             font_size=16,
             color=(0.12, 0.12, 0.12, 1),
         )
-        image_view = Image(size_hint_y=None, height=160, allow_stretch=True, keep_ratio=True)
-        answer_input = TextInput(
-            text="",
-            multiline=False,
-            size_hint_y=None,
-            height=44,
-            font_name="RedHatMono",
-            font_size=16,
-            background_color=(0.98, 0.98, 0.96, 1),
-            foreground_color=(0.1, 0.1, 0.1, 1),
-            cursor_color=(0.2, 0.2, 0.2, 1),
-        )
-        feedback_label = Label(
-            text="",
-            size_hint_y=None,
-            height=32,
-            font_name="RedHatMono",
-            font_size=14,
-            color=(0.85, 0.8, 0.55, 1),
-        )
+        feedback_label.opacity = 0
+
         next_button = Button(
-            text="Submit",
+            text="Next",
             size_hint_y=None,
-            height=48,
+            height=0,
             background_color=(0.85, 0.5, 0.1, 1),
             color=(1, 1, 1, 1),
             font_name="RedHatMono",
             font_size=16,
         )
+        next_button.opacity = 0
 
         stats_label = Label(
-            text="New 0/5 | Reviews 0",
+            text="",
             size_hint_y=None,
             height=32,
             font_name="RedHatMono",
@@ -161,41 +165,111 @@ class AminoStudyApp(App):
             font_size=14,
         )
 
+        answer_state = {"selected": None, "is_correct": False}
+
         def refresh_stats():
             p = state.plan
             stats_label.text = (
                 f"New {p['new_done']}/{p['new_quota']} | Reviews {p['review_done']}"
             )
 
+        def set_options_enabled(enabled: bool):
+            for btn in option_buttons:
+                btn.disabled = not enabled
+
+        def show_answer_area():
+            image_view.height = 160
+            image_view.opacity = 1
+            feedback_label.height = 36
+            feedback_label.opacity = 1
+            next_button.height = 48
+            next_button.opacity = 1
+
+        def hide_answer_area():
+            image_view.height = 0
+            image_view.opacity = 0
+            feedback_label.height = 0
+            feedback_label.opacity = 0
+            next_button.height = 0
+            next_button.opacity = 0
+
         def refresh_view():
             question = state.current_question()
             if not question:
-                question_label.text = "No questions available"
-                options_label.text = ""
+                question_label.text = "Done! Come back tomorrow."
+                for btn in option_buttons:
+                    btn.text = ""
+                set_options_enabled(False)
+                hide_answer_area()
                 header.text = build_header_text(state.plan, index=0, total=0)
                 refresh_stats()
                 return
+
             header.text = build_header_text(
                 state.plan, index=state.index, total=len(state.questions)
             )
             question_label.text = build_question_prompt(question)
-            options_label.text = build_options_text(question)
             image_view.source = build_image_path(question)
+
+            options = build_options_list(question)
+            for i in range(4):
+                if i < len(options):
+                    option_buttons[i].text = f"{labels[i]}. {options[i]}"
+                    option_buttons[i].background_color = (0.15, 0.4, 0.75, 1)
+                else:
+                    option_buttons[i].text = ""
+
+            set_options_enabled(True)
+            hide_answer_area()
+            answer_state["selected"] = None
+            answer_state["is_correct"] = False
             refresh_stats()
 
-        def on_submit(_instance):
+        def on_option_click(btn):
+            if answer_state["selected"] is not None:
+                return
+
             question = state.current_question()
             if not question:
                 return
-            correct = submit_answer(
+
+            selected_text = btn.text.split(". ", 1)[-1] if ". " in btn.text else btn.text
+            is_correct = check_answer(question, selected_text)
+
+            answer_state["selected"] = selected_text
+            answer_state["is_correct"] = is_correct
+
+            set_options_enabled(False)
+
+            for b in option_buttons:
+                if b is btn:
+                    b.background_color = (0.15, 0.65, 0.15, 1) if is_correct else (0.85, 0.15, 0.15, 1)
+                else:
+                    option_text = b.text.split(". ", 1)[-1] if ". " in b.text else b.text
+                    if option_text == question.get("answer", ""):
+                        b.background_color = (0.15, 0.65, 0.15, 1)
+
+            if is_correct:
+                feedback_label.text = "Correct!"
+                feedback_label.color = (0.15, 0.65, 0.15, 1)
+            else:
+                feedback_label.text = f"Incorrect. Answer: {question.get('answer', '')}"
+                feedback_label.color = (0.85, 0.15, 0.15, 1)
+
+            show_answer_area()
+
+        def on_next(_instance):
+            question = state.current_question()
+            if not question:
+                return
+
+            submit_answer(
                 DB_PATH,
                 plan_id=state.plan_id,
                 question=question,
-                answer=answer_input.text,
+                is_correct=answer_state["is_correct"],
             )
-            feedback_label.text = "Correct" if correct else "Incorrect"
             state.advance()
-            answer_input.text = ""
             refresh_view()
 
         def on_reset(_instance):
@@ -204,17 +278,18 @@ class AminoStudyApp(App):
             state = load_study_state(DB_PATH)
             refresh_view()
 
-        next_button.bind(on_press=on_submit)
+        for btn in option_buttons:
+            btn.bind(on_press=on_option_click)
+        next_button.bind(on_press=on_next)
         reset_button.bind(on_press=on_reset)
 
         root.add_widget(header)
         card.add_widget(question_label)
+        card.add_widget(options_grid)
         card.add_widget(image_view)
-        card.add_widget(options_label)
-        card.add_widget(answer_input)
+        card.add_widget(feedback_label)
+        card.add_widget(next_button)
         root.add_widget(card)
-        root.add_widget(next_button)
-        root.add_widget(feedback_label)
         root.add_widget(stats_label)
         root.add_widget(reset_button)
 

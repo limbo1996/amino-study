@@ -15,8 +15,8 @@ class TestSessionService(unittest.TestCase):
                 conn.execute(
                     """
                     INSERT INTO amino_acids
-                    (name_cn, name_en, abbr3, abbr1, image_path)
-                    VALUES (?, ?, ?, ?, ?)
+                    (name_cn, name_en, abbr3, abbr1, image_path, formula)
+                    VALUES (?, ?, ?, ?, ?, ?)
                     """,
                     (
                         f"中文{i}",
@@ -24,6 +24,7 @@ class TestSessionService(unittest.TestCase):
                         f"A{i}",
                         f"X{i}",
                         f"/tmp/{i}.png",
+                        "",
                     ),
                 )
             conn.commit()
@@ -39,13 +40,29 @@ class TestSessionService(unittest.TestCase):
 
             self.assertGreaterEqual(len(session["questions"]), 1)
             self.assertIn("plan", session)
+            self.assertIn("name_cn", session["questions"][0])
+
+    def test_build_session_questions_have_independent_formats(self):
+        now = datetime(2026, 5, 13, 9, 0, 0)
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            db_path = Path(tmp_dir) / "amino.db"
+            init_db(db_path)
+            self._seed_amino_acids(db_path, 20)
+
+            session = build_session(db_path, now=now)
+            questions = session["questions"]
+
+            self.assertGreaterEqual(len(questions), 2)
+            formats = {q["format"] for q in questions}
+            self.assertIn("abbr1", formats)
+            self.assertIn("abbr3", formats)
 
     def test_record_session_answer_updates_state(self):
         now = datetime(2026, 5, 13, 9, 0, 0)
         with tempfile.TemporaryDirectory() as tmp_dir:
             db_path = Path(tmp_dir) / "amino.db"
             init_db(db_path)
-            self._seed_amino_acids(db_path, 1)
+            self._seed_amino_acids(db_path, 6)
 
             session = build_session(db_path, now=now)
             question = session["questions"][0]

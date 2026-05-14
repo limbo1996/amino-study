@@ -3,36 +3,42 @@ import unittest
 from app.screens.study_screen import (
     build_header_text,
     build_image_path,
+    build_options_list,
     build_options_text,
     build_question_prompt,
+    check_answer,
 )
 
 
 class TestStudyScreen(unittest.TestCase):
     def test_build_question_prompt_for_review(self):
         question = {
-            "type": "review",
-            "field": "name_en",
-            "options": ["Alanine", "Glycine", "Valine", "Serine"],
+            "type": "choice",
+            "name_cn": "丙氨酸",
+            "name_en": "Alanine",
+            "options": ["Ala", "Gly", "Val", "Ser"],
         }
 
         prompt = build_question_prompt(question)
 
-        self.assertIn("name_en", prompt)
+        self.assertIn("丙氨酸", prompt)
+        self.assertIn("Alanine", prompt)
 
     def test_build_question_prompt_for_new(self):
         question = {
-            "type": "new",
-            "field": "abbr1",
+            "type": "choice",
+            "name_cn": "甘氨酸",
+            "name_en": "Glycine",
         }
 
         prompt = build_question_prompt(question)
 
-        self.assertIn("abbr1", prompt)
+        self.assertIn("甘氨酸", prompt)
+        self.assertIn("Glycine", prompt)
 
     def test_build_options_text_lists_choices(self):
         question = {
-            "options": ["Alanine", "Glycine", "Valine", "Serine"],
+            "options": ["Ala", "Gly", "Val", "Ser"],
         }
 
         text = build_options_text(question)
@@ -54,6 +60,24 @@ class TestStudyScreen(unittest.TestCase):
         path = build_image_path(question)
 
         self.assertEqual(path, "/tmp/A.png")
+
+    def test_build_options_list_returns_four_values(self):
+        question = {"options": ["Ala", "Gly", "Val", "Ser"]}
+
+        result = build_options_list(question)
+
+        self.assertEqual(result, ["Ala", "Gly", "Val", "Ser"])
+        self.assertEqual(len(result), 4)
+
+    def test_check_answer_correct(self):
+        question = {"answer": "Ala"}
+
+        self.assertTrue(check_answer(question, "Ala"))
+
+    def test_check_answer_incorrect(self):
+        question = {"answer": "Ala"}
+
+        self.assertFalse(check_answer(question, "Gly"))
 
 
 if __name__ == "__main__":

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from datetime import datetime
+import random
 from pathlib import Path
 
 from app.db.learning_repo import increment_plan_counts, record_answer
 from app.services.plan import build_today_plan
-from app.services.quiz import generate_fill_in, generate_multiple_choice
+from app.services.quiz import generate_abbr_question
 
 
 def build_session(db_path: Path, *, now: datetime, rng_seed: int | None = None) -> dict:
@@ -13,37 +14,32 @@ def build_session(db_path: Path, *, now: datetime, rng_seed: int | None = None) 
     questions = []
 
     if rng_seed is not None:
-        import random
-
         random.seed(rng_seed)
 
-    if plan_bundle["reviews"]:
-        review_ids = [review["amino_id"] for review in plan_bundle["reviews"]]
-        review_items = _fetch_items_by_ids(db_path, review_ids)
-        if len(review_items) >= 4:
-            question = generate_review_question(review_items)
+    candidate_ids = [review["amino_id"] for review in plan_bundle["reviews"]]
+    candidate_ids.extend(item["id"] for item in plan_bundle["new_items"])
+    candidates = _fetch_items_by_ids(db_path, candidate_ids)
+
+    if len(candidates) >= 4:
+        for candidate in candidates:
+            question = generate_abbr_question(
+                candidates,
+                correct_index=candidates.index(candidate),
+                format_type=None,
+            )
             questions.append(
                 {
-                    "type": "review",
-                    "amino_id": question["prompt"]["id"],
-                    "field": question["field"],
+                    "type": "choice",
+                    "amino_id": candidate["id"],
+                    "format": question["format"],
                     "options": question["options"],
                     "answer": question["answer"],
-                    "image_path": question["prompt"]["image_path"],
+                    "image_path": candidate["image_path"],
+                    "name_cn": candidate["name_cn"],
+                    "name_en": candidate["name_en"],
+                    "formula": candidate["formula"],
                 }
             )
-
-    for item in plan_bundle["new_items"]:
-        fill_in = generate_fill_in(item, field="abbr1")
-        questions.append(
-            {
-                "type": "new",
-                "amino_id": item["id"],
-                "field": "abbr1",
-                "answer": fill_in["answer"],
-                "image_path": item["image_path"],
-            }
-        )
 
     return {
         "plan": plan_bundle["plan"],
@@ -63,18 +59,7 @@ def record_session_answer(
     now: datetime,
 ) -> None:
     record_answer(db_path, amino_id=amino_id, is_correct=is_correct, now=now)
-    if question_type == "new":
-        increment_plan_counts(db_path, plan_id=plan_id, new_done=1)
-    elif question_type == "review":
-        increment_plan_counts(db_path, plan_id=plan_id, review_done=1)
-
-
-def generate_review_question(
-    items: list[dict],
-    *,
-    correct_index: int = 0,
-) -> dict:
-    return generate_multiple_choice(items, field="name_en", correct_index=correct_index)
+    increment_plan_counts(db_path, plan_id=plan_id, new_done=1)
 
 
 def _fetch_items_by_ids(db_path: Path, ids: list[int]) -> list[dict]:
@@ -85,7 +70,7 @@ def _fetch_items_by_ids(db_path: Path, ids: list[int]) -> list[dict]:
 
     placeholders = ",".join("?" for _ in ids)
     query = (
-        "SELECT id, name_cn, name_en, abbr3, abbr1, image_path "
+        "SELECT id, name_cn, name_en, abbr3, abbr1, image_path, formula "
         f"FROM amino_acids WHERE id IN ({placeholders})"
     )
     with sqlite3.connect(db_path) as conn:
@@ -99,6 +84,7 @@ def _fetch_items_by_ids(db_path: Path, ids: list[int]) -> list[dict]:
             "abbr3": row[3],
             "abbr1": row[4],
             "image_path": row[5],
+            "formula": row[6],
         }
         for row in rows
     ]
