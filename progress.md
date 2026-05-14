@@ -38,6 +38,7 @@
   - 实现学习会话服务
   - 实现计划计数更新与会话集成
   - 实现最小学习界面
+  - 更新 UI 设计技能规则
   - 安装 frontend-design skill
 - 创建/修改的文件：
   - docs/superpowers/specs/2026-05-13-amino-learning-app-design.md
@@ -70,6 +71,7 @@
   - tests/test_plan_counts.py
   - app/screens/study_screen.py
   - tests/test_study_screen.py
+  - AGENTS.md
   - skills/anthropics-skills/skills/frontend-design/
 
 ## 测试结果
