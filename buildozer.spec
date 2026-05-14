@@ -320,25 +320,11 @@ android.allow_backup = True
 
 # (str) The format used to package the app for debug mode (apk or aar).
 # android.debug_artifact = apk
-
-# (str) A display cutout is an area on some devices that extends into the display surface.
-# It allows for an edge-to-edge experience while providing space for important sensors on the front of the device.
-# Available options for Android API >= 28 are "default, shortEdges, never" and defaults to never.
-# Android documentation: https://developer.android.com/develop/ui/views/layout/display-cutout
-#android.display_cutout = never
-
-#
-# Python for android (p4a) specific
-#
-
-# (str) python-for-android URL to use for checkout
-#p4a.url =
-
-# (str) python-for-android fork to use in case if p4a.url is not specified, defaults to upstream (kivy)
-#p4a.fork = kivy
+android.debug_artifact = apk
 
 # (str) python-for-android branch to use, defaults to master
 #p4a.branch = master
+p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
 #p4a.commit = HEAD
