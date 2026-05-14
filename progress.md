@@ -38,6 +38,7 @@
   - 实现学习会话服务
   - 实现计划计数更新与会话集成
   - 实现最小学习界面
+  - 安装 frontend-design skill
 - 创建/修改的文件：
   - docs/superpowers/specs/2026-05-13-amino-learning-app-design.md
   - tests/test_scheduler.py
@@ -69,6 +70,7 @@
   - tests/test_plan_counts.py
   - app/screens/study_screen.py
   - tests/test_study_screen.py
+  - skills/anthropics-skills/skills/frontend-design/
 
 ## 测试结果
 | 测试 | 输入 | 预期结果 | 实际结果 | 状态 |
@@ -89,7 +91,7 @@
 ## 错误日志
 | 时间戳 | 错误 | 尝试次数 | 解决方案 |
 |--------|------|---------|---------|
-| 2026-05-14 | git clone https://github.com/anthropics/skills 失败（HTTP2 framing layer） | 1 | 计划重试或改用 shallow clone | 
+| 2026-05-14 | git clone https://github.com/anthropics/skills 失败（HTTP2 framing layer） | 1 | 使用 HTTP/1.1 shallow clone 解决 | 
 
 ## 五问重启检查
 | 问题 | 答案 |
