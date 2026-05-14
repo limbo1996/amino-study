@@ -50,11 +50,15 @@ class AminoStudyApp(App):
 
         display_font = REPO_ROOT / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/Gloock-Regular.ttf"
         mono_font = REPO_ROOT / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/RedHatMono-Regular.ttf"
-        cjk_font = Path("/Library/Fonts/Arial Unicode.ttf")
         LabelBase.register(name="Gloock", fn_regular=str(display_font))
         LabelBase.register(name="RedHatMono", fn_regular=str(mono_font))
-        if cjk_font.exists():
-            LabelBase.register(name="ArialUnicode", fn_regular=str(cjk_font))
+
+        cjk_font_name = None
+        for cjk_path in ("/Library/Fonts/Arial Unicode.ttf", "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"):
+            if Path(cjk_path).exists():
+                LabelBase.register(name="ArialUnicode", fn_regular=str(cjk_path))
+                cjk_font_name = "ArialUnicode"
+                break
 
         state = load_study_state(DB_PATH)
 
@@ -104,7 +108,7 @@ class AminoStudyApp(App):
             text="",
             size_hint_y=None,
             height=80,
-            font_name="ArialUnicode" if cjk_font.exists() else None,
+            font_name=cjk_font_name,
             font_size=26,
             color=(0.12, 0.12, 0.12, 1),
         )
