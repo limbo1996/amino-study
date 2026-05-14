@@ -6,6 +6,13 @@ from datetime import datetime
 from app.services.session import build_session, record_session_answer
 
 
+def build_header_text(plan: dict, *, index: int, total: int) -> str:
+    return (
+        f"Plan {plan['plan_date']} | New {plan['new_done']}/{plan['new_quota']} "
+        f"| Reviews {plan['review_done']} | Q {index + 1}/{max(total, 1)}"
+    )
+
+
 def build_question_prompt(question: dict) -> str:
     q_type = question.get("type", "")
     field = question.get("field", "")
@@ -24,6 +31,7 @@ def build_options_text(question: dict) -> str:
 
 @dataclass
 class StudyState:
+    plan: dict
     plan_id: int
     questions: list[dict]
     index: int = 0
@@ -42,7 +50,11 @@ class StudyState:
 
 def load_study_state(db_path) -> StudyState:
     session = build_session(db_path, now=datetime.now())
-    return StudyState(plan_id=session["plan"]["id"], questions=session["questions"])
+    return StudyState(
+        plan=session["plan"],
+        plan_id=session["plan"]["id"],
+        questions=session["questions"],
+    )
 
 
 def submit_answer(db_path, *, plan_id: int, question: dict, answer: str) -> bool:

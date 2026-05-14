@@ -16,6 +16,7 @@ class AminoStudyApp(App):
         from app.bootstrap import bootstrap_storage
         from app.config import CSV_PATH, DB_PATH
         from app.screens.study_screen import (
+            build_header_text,
             build_options_text,
             build_question_prompt,
             load_study_state,
@@ -30,7 +31,7 @@ class AminoStudyApp(App):
         state = load_study_state(DB_PATH)
 
         root = BoxLayout(orientation="vertical", padding=12, spacing=8)
-        header = Label(text="Amino Study", size_hint_y=None, height=40)
+        header = Label(text="", size_hint_y=None, height=40)
         question_label = Label(text="", size_hint_y=None, height=60)
         options_label = Label(text="", size_hint_y=None, height=120)
         answer_input = TextInput(text="", multiline=False, size_hint_y=None, height=40)
@@ -42,7 +43,11 @@ class AminoStudyApp(App):
             if not question:
                 question_label.text = "No questions available"
                 options_label.text = ""
+                header.text = build_header_text(state.plan, index=0, total=0)
                 return
+            header.text = build_header_text(
+                state.plan, index=state.index, total=len(state.questions)
+            )
             question_label.text = build_question_prompt(question)
             options_label.text = build_options_text(question)
 
