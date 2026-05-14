@@ -2,3 +2,7 @@
 __pycache__/
 *.pyc
 data/*.db
+/.buildozer/
+/bin/
+*.apk
+*.aab
