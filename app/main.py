@@ -101,7 +101,6 @@ class AminoStudyApp(App):
             text="",
             size_hint_y=None,
             height=80,
-            font_name="Gloock",
             font_size=26,
             color=(0.12, 0.12, 0.12, 1),
         )
