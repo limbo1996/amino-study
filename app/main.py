@@ -2,6 +2,8 @@
 
 try:
     from kivy.app import App
+    from kivy.core.text import LabelBase
+    from kivy.graphics import Color, Line, Rectangle
     from kivy.uix.boxlayout import BoxLayout
     from kivy.uix.button import Button
     from kivy.uix.label import Label
@@ -14,7 +16,7 @@ except ModuleNotFoundError:
 class AminoStudyApp(App):
     def build(self):
         from app.bootstrap import bootstrap_storage
-        from app.config import CSV_PATH, DB_PATH
+        from app.config import CSV_PATH, DB_PATH, REPO_ROOT
         from app.screens.study_screen import (
             build_header_text,
             build_options_text,
@@ -28,15 +30,99 @@ class AminoStudyApp(App):
         if Label is None:
             return "Amino Study App"
 
+        display_font = REPO_ROOT / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/Gloock-Regular.ttf"
+        mono_font = REPO_ROOT / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/RedHatMono-Regular.ttf"
+        LabelBase.register(name="Gloock", fn_regular=str(display_font))
+        LabelBase.register(name="RedHatMono", fn_regular=str(mono_font))
+
         state = load_study_state(DB_PATH)
 
-        root = BoxLayout(orientation="vertical", padding=12, spacing=8)
-        header = Label(text="", size_hint_y=None, height=40)
-        question_label = Label(text="", size_hint_y=None, height=60)
-        options_label = Label(text="", size_hint_y=None, height=120)
-        answer_input = TextInput(text="", multiline=False, size_hint_y=None, height=40)
-        feedback_label = Label(text="", size_hint_y=None, height=40)
-        next_button = Button(text="Submit", size_hint_y=None, height=44)
+        root = BoxLayout(orientation="vertical", padding=24, spacing=16)
+        root.canvas.before.clear()
+        with root.canvas.before:
+            Color(0.08, 0.09, 0.12, 1)
+            bg = Rectangle(pos=root.pos, size=root.size)
+
+        def _update_bg(_instance, _value):
+            bg.pos = root.pos
+            bg.size = root.size
+
+        root.bind(pos=_update_bg, size=_update_bg)
+
+        header = Label(
+            text="",
+            size_hint_y=None,
+            height=44,
+            font_name="RedHatMono",
+            font_size=16,
+            color=(0.7, 0.75, 0.8, 1),
+        )
+
+        card = BoxLayout(
+            orientation="vertical",
+            padding=24,
+            spacing=12,
+            size_hint_y=None,
+            height=360,
+        )
+        card.canvas.before.clear()
+        with card.canvas.before:
+            Color(0.94, 0.93, 0.9, 1)
+            card_bg = Rectangle(pos=card.pos, size=card.size)
+            Color(0.15, 0.15, 0.15, 1)
+            card_border = Line(rectangle=(card.x, card.y, card.width, card.height), width=1.2)
+
+        def _update_card(_instance, _value):
+            card_bg.pos = card.pos
+            card_bg.size = card.size
+            card_border.rectangle = (card.x, card.y, card.width, card.height)
+
+        card.bind(pos=_update_card, size=_update_card)
+
+        question_label = Label(
+            text="",
+            size_hint_y=None,
+            height=80,
+            font_name="Gloock",
+            font_size=26,
+            color=(0.12, 0.12, 0.12, 1),
+        )
+        options_label = Label(
+            text="",
+            size_hint_y=None,
+            height=140,
+            font_name="RedHatMono",
+            font_size=16,
+            color=(0.12, 0.12, 0.12, 1),
+        )
+        answer_input = TextInput(
+            text="",
+            multiline=False,
+            size_hint_y=None,
+            height=44,
+            font_name="RedHatMono",
+            font_size=16,
+            background_color=(0.98, 0.98, 0.96, 1),
+            foreground_color=(0.1, 0.1, 0.1, 1),
+            cursor_color=(0.2, 0.2, 0.2, 1),
+        )
+        feedback_label = Label(
+            text="",
+            size_hint_y=None,
+            height=32,
+            font_name="RedHatMono",
+            font_size=14,
+            color=(0.85, 0.8, 0.55, 1),
+        )
+        next_button = Button(
+            text="Submit",
+            size_hint_y=None,
+            height=48,
+            background_color=(0.85, 0.5, 0.1, 1),
+            color=(1, 1, 1, 1),
+            font_name="SpaceMono",
+            font_size=16,
+        )
 
         def refresh_view():
             question = state.current_question()
@@ -69,9 +155,10 @@ class AminoStudyApp(App):
         next_button.bind(on_press=on_submit)
 
         root.add_widget(header)
-        root.add_widget(question_label)
-        root.add_widget(options_label)
-        root.add_widget(answer_input)
+        card.add_widget(question_label)
+        card.add_widget(options_label)
+        card.add_widget(answer_input)
+        root.add_widget(card)
         root.add_widget(next_button)
         root.add_widget(feedback_label)
 
