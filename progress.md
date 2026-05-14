@@ -44,6 +44,7 @@
   - 增强学习界面视觉样式
   - 更新 UI 设计技能规则
   - 安装 frontend-design skill
+  - 实现重置服务并接入UI
 - 创建/修改的文件：
   - docs/superpowers/specs/2026-05-13-amino-learning-app-design.md
   - tests/test_scheduler.py
@@ -77,6 +78,8 @@
   - tests/test_study_screen.py
   - AGENTS.md
   - skills/anthropics-skills/skills/frontend-design/
+  - app/services/reset.py
+  - tests/test_reset_service.py
 
 ## 测试结果
 | 测试 | 输入 | 预期结果 | 实际结果 | 状态 |
@@ -94,6 +97,7 @@
 | 计划计数单测 | python -m unittest tests/test_plan_counts.py | 通过 | 通过 | pass |
 | 学习界面单测 | python -m unittest tests/test_study_screen.py | 通过 | 通过 | pass |
 | 统计设置单测 | python -m unittest tests/test_stats_settings_screen.py | 通过 | 通过 | pass |
+| 重置服务单测 | python -m unittest tests/test_reset_service.py | 通过 | 通过 | pass |
 
 ## 错误日志
 | 时间戳 | 错误 | 尝试次数 | 解决方案 |
@@ -103,8 +107,8 @@
 ## 五问重启检查
 | 问题 | 答案 |
 |------|------|
-| 我在哪里？ | 阶段 3 |
-| 我要去哪里？ | 阶段 4-5 |
+| 我在哪里？ | 阶段 4 |
+| 我要去哪里？ | 阶段 5 |
 | 目标是什么？ | 见 task_plan.md |
 | 我学到了什么？ | 见 findings.md |
 | 我做了什么？ | 见上方记录 |

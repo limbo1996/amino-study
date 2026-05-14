@@ -26,6 +26,7 @@ class AminoStudyApp(App):
             load_study_state,
             submit_answer,
         )
+        from app.services.reset import reset_progress
 
         bootstrap_storage(DB_PATH, CSV_PATH)
 
@@ -146,12 +147,19 @@ class AminoStudyApp(App):
             font_size=14,
         )
 
+        def refresh_stats():
+            p = state.plan
+            stats_label.text = (
+                f"New {p['new_done']}/{p['new_quota']} | Reviews {p['review_done']}"
+            )
+
         def refresh_view():
             question = state.current_question()
             if not question:
                 question_label.text = "No questions available"
                 options_label.text = ""
                 header.text = build_header_text(state.plan, index=0, total=0)
+                refresh_stats()
                 return
             header.text = build_header_text(
                 state.plan, index=state.index, total=len(state.questions)
@@ -159,6 +167,7 @@ class AminoStudyApp(App):
             question_label.text = build_question_prompt(question)
             options_label.text = build_options_text(question)
             image_view.source = build_image_path(question)
+            refresh_stats()
 
         def on_submit(_instance):
             question = state.current_question()
@@ -175,7 +184,14 @@ class AminoStudyApp(App):
             answer_input.text = ""
             refresh_view()
 
+        def on_reset(_instance):
+            reset_progress(DB_PATH)
+            nonlocal state
+            state = load_study_state(DB_PATH)
+            refresh_view()
+
         next_button.bind(on_press=on_submit)
+        reset_button.bind(on_press=on_reset)
 
         root.add_widget(header)
         card.add_widget(question_label)
