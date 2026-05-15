@@ -1,6 +1,12 @@
 """Android entry point — delegates to app.main."""
 
-from app.main import AminoStudyApp
+import traceback
+import sys
 
 if __name__ == "__main__":
-    AminoStudyApp().run()
+    try:
+        from app.main import AminoStudyApp
+        AminoStudyApp().run()
+    except Exception:
+        traceback.print_exc()
+        sys.exit(1)

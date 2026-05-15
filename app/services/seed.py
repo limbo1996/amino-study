@@ -10,12 +10,12 @@ def ensure_seeded(db_path: Path, csv_path: Path) -> bool:
     if count_amino_acids(db_path) > 0:
         return False
 
-    records = load_amino_acids(csv_path)
+    records = load_amino_acids(csv_path, repo_root=csv_path.parent)
     insert_amino_acids(db_path, records)
     return True
 
 
 def reload_seed_data(db_path: Path, csv_path: Path) -> None:
-    records = load_amino_acids(csv_path)
+    records = load_amino_acids(csv_path, repo_root=csv_path.parent)
     clear_amino_acids(db_path)
     insert_amino_acids(db_path, records)
