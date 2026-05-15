@@ -50,8 +50,17 @@ class AminoStudyApp(App):
 
         display_font = REPO_ROOT / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/Gloock-Regular.ttf"
         mono_font = REPO_ROOT / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/RedHatMono-Regular.ttf"
-        LabelBase.register(name="Gloock", fn_regular=str(display_font))
-        LabelBase.register(name="RedHatMono", fn_regular=str(mono_font))
+
+        display_font_name = None
+        mono_font_name = None
+
+        if display_font.exists():
+            LabelBase.register(name="Gloock", fn_regular=str(display_font))
+            display_font_name = "Gloock"
+
+        if mono_font.exists():
+            LabelBase.register(name="RedHatMono", fn_regular=str(mono_font))
+            mono_font_name = "RedHatMono"
 
         cjk_font_name = None
         for cjk_path in ("/Library/Fonts/Arial Unicode.ttf", "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"):
@@ -78,7 +87,7 @@ class AminoStudyApp(App):
             text="",
             size_hint_y=None,
             height=44,
-            font_name="RedHatMono",
+            font_name=mono_font_name,
             font_size=16,
             color=(0.7, 0.75, 0.8, 1),
         )
@@ -119,7 +128,7 @@ class AminoStudyApp(App):
         for i in range(4):
             btn = Button(
                 text="",
-                font_name="RedHatMono",
+                font_name=mono_font_name,
                 font_size=16,
                 background_color=(0.15, 0.4, 0.75, 1),
                 color=(1, 1, 1, 1),
@@ -136,7 +145,7 @@ class AminoStudyApp(App):
             text="",
             size_hint_y=None,
             height=0,
-            font_name="RedHatMono",
+            font_name=mono_font_name,
             font_size=16,
             color=(0.12, 0.12, 0.12, 1),
         )
@@ -148,7 +157,7 @@ class AminoStudyApp(App):
             height=0,
             background_color=(0.85, 0.5, 0.1, 1),
             color=(1, 1, 1, 1),
-            font_name="RedHatMono",
+            font_name=mono_font_name,
             font_size=16,
         )
         next_button.opacity = 0
@@ -157,7 +166,7 @@ class AminoStudyApp(App):
             text="",
             size_hint_y=None,
             height=32,
-            font_name="RedHatMono",
+            font_name=mono_font_name,
             font_size=14,
             color=(0.7, 0.75, 0.8, 1),
         )
@@ -168,7 +177,7 @@ class AminoStudyApp(App):
             height=40,
             background_color=(0.2, 0.2, 0.2, 1),
             color=(0.9, 0.9, 0.9, 1),
-            font_name="RedHatMono",
+            font_name=mono_font_name,
             font_size=14,
         )
 
