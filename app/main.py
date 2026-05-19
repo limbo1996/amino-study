@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -31,7 +32,8 @@ except ModuleNotFoundError:
 class AminoStudyApp(App):
     def build(self):
         from app.bootstrap import bootstrap_storage
-        from app.config import CSV_PATH, DB_PATH, REPO_ROOT
+        from app.config import get_paths
+        from app.runtime_assets import ensure_runtime_assets
         from app.screens.study_screen import (
             build_header_text,
             build_image_path,
@@ -43,13 +45,18 @@ class AminoStudyApp(App):
         )
         from app.services.reset import reset_progress
 
-        bootstrap_storage(DB_PATH, CSV_PATH)
+        if hasattr(self, "user_data_dir"):
+            os.environ.setdefault("AMINO_DATA_DIR", self.user_data_dir)
+
+        paths = get_paths()
+        ensure_runtime_assets(data_dir=paths.data_dir, resource_root=paths.resource_root)
+        bootstrap_storage(paths.db_path, paths.csv_path)
 
         if Label is None:
             return "Amino Study App"
 
-        display_font = REPO_ROOT / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/Gloock-Regular.ttf"
-        mono_font = REPO_ROOT / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/RedHatMono-Regular.ttf"
+        display_font = paths.resource_root / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/Gloock-Regular.ttf"
+        mono_font = paths.resource_root / "skills/anthropics-skills/skills/canvas-design/canvas-fonts/RedHatMono-Regular.ttf"
 
         display_font_name = None
         mono_font_name = None
@@ -69,7 +76,7 @@ class AminoStudyApp(App):
                 cjk_font_name = "ArialUnicode"
                 break
 
-        state = load_study_state(DB_PATH)
+        state = load_study_state(paths.db_path)
 
         root = BoxLayout(orientation="vertical", padding=24, spacing=16)
         root.canvas.before.clear()
@@ -280,7 +287,7 @@ class AminoStudyApp(App):
                 return
 
             submit_answer(
-                DB_PATH,
+                paths.db_path,
                 plan_id=state.plan_id,
                 question=question,
                 is_correct=answer_state["is_correct"],
@@ -289,9 +296,9 @@ class AminoStudyApp(App):
             refresh_view()
 
         def on_reset(_instance):
-            reset_progress(DB_PATH)
+            reset_progress(paths.db_path)
             nonlocal state
-            state = load_study_state(DB_PATH)
+            state = load_study_state(paths.db_path)
             refresh_view()
 
         for btn in option_buttons:

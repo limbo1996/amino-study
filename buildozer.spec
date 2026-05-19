@@ -18,11 +18,11 @@ package.domain = com.example.aminostudy
 source.dir = .
 
 # (list) Source files to include (leave empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,csv,ttf
+source.include_exts = py,png,jpg,kv,atlas,csv,ttf,sh
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
-source.include_patterns = fig/*.png
+source.include_patterns = fig/*.png,deepseek_csv_20260513_f1933c.csv
 
 # (list) Source files to exclude (leave empty to not exclude anything)
 #source.exclude_exts = spec

@@ -1,3 +1,4 @@
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -14,6 +15,20 @@ class TestDataLoader(unittest.TestCase):
         self.assertEqual(len(records), 20)
         self.assertIn("name_cn", records[0])
         self.assertIn("abbr1", records[0])
+
+    def test_normalizes_image_paths_to_fig_dir(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            csv_path = temp_path / "data.csv"
+            csv_path.write_text(
+                "中文名,英文名,三字缩写,单字缩写,图片路径\n"
+                "丙氨酸,Alanine,Ala,A,fig/A.png\n",
+                encoding="utf-8",
+            )
+
+            records = load_amino_acids(csv_path, repo_root=temp_path)
+
+            self.assertEqual(records[0]["image_path"], str(temp_path / "fig" / "A.png"))
 
 
 if __name__ == "__main__":

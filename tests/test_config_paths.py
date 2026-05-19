@@ -1,18 +1,23 @@
+import os
+import tempfile
 import unittest
 from pathlib import Path
 
-from app import config
+from app.config import get_paths
 
 
 class TestConfigPaths(unittest.TestCase):
-    def test_paths_resolve_within_repo(self):
-        self.assertTrue(config.REPO_ROOT.is_dir())
-        self.assertTrue(str(config.DB_PATH).startswith(str(config.REPO_ROOT)))
-        self.assertTrue(str(config.CSV_PATH).startswith(str(config.REPO_ROOT)))
+    def test_paths_use_env_overrides(self):
+        with tempfile.TemporaryDirectory() as temp_data, tempfile.TemporaryDirectory() as temp_resource:
+            os.environ["AMINO_DATA_DIR"] = temp_data
+            os.environ["AMINO_RESOURCE_ROOT"] = temp_resource
 
-    def test_data_directory_exists(self):
-        self.assertTrue(config.DB_PATH.parent.is_dir())
-        self.assertEqual(config.DB_PATH.parent, config.REPO_ROOT / "data")
+            paths = get_paths()
+
+            self.assertEqual(paths.data_dir, Path(temp_data))
+            self.assertEqual(paths.db_path, Path(temp_data) / "amino.db")
+            self.assertEqual(paths.csv_path, Path(temp_data) / "deepseek_csv_20260513_f1933c.csv")
+            self.assertEqual(paths.resource_root, Path(temp_resource))
 
 
 if __name__ == "__main__":

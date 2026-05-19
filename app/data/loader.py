@@ -31,15 +31,15 @@ _EMBEDDED_DATA = [
 
 def load_amino_acids(csv_path: Path, *, repo_root: Path | None = None) -> list[dict]:
     if csv_path.exists():
-        return _load_from_csv(csv_path)
+        return _load_from_csv(csv_path, repo_root=repo_root)
     if repo_root is not None:
         csv_with_root = repo_root / csv_path.name
         if csv_with_root.exists():
-            return _load_from_csv(csv_with_root)
+            return _load_from_csv(csv_with_root, repo_root=repo_root)
     return _load_embedded(repo_root or Path.cwd())
 
 
-def _load_from_csv(csv_path: Path) -> list[dict]:
+def _load_from_csv(csv_path: Path, *, repo_root: Path | None) -> list[dict]:
     with csv_path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         for field in REQUIRED_FIELDS:
@@ -48,12 +48,15 @@ def _load_from_csv(csv_path: Path) -> list[dict]:
 
         records = []
         for row in reader:
+            image_path = row["图片路径"].strip()
+            if repo_root is not None:
+                image_path = str((repo_root / "fig" / Path(image_path).name))
             record = {
                 "name_cn": row["中文名"].strip(),
                 "name_en": row["英文名"].strip(),
                 "abbr3": row["三字缩写"].strip(),
                 "abbr1": row["单字缩写"].strip(),
-                "image_path": row["图片路径"].strip(),
+                "image_path": image_path,
                 "formula": row.get("分子式", "").strip(),
             }
             records.append(record)

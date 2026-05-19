@@ -108,6 +108,10 @@
 | 统计设置单测 | python -m unittest tests/test_stats_settings_screen.py | 通过 | 通过 | pass |
 | 重置服务单测 | python -m unittest tests/test_reset_service.py | 通过 | 通过 | pass |
 | 模块路径单测 | python -m unittest tests/test_module_path.py | 通过 | 通过 | pass |
+| config 路径单测 | python -m unittest tests/test_config_paths.py | 通过 | 通过 | pass |
+| runtime 资源单测 | python -m unittest tests/test_runtime_assets.py | 通过 | 通过 | pass |
+| data loader 单测 | python -m unittest tests/test_data_loader.py | 通过 | 通过 | pass |
+| app 入口单测 | python -m unittest tests/test_app_entry.py | 通过 | 通过 | pass |
 
 ## 错误日志
 | 时间戳 | 错误 | 尝试次数 | 解决方案 |
@@ -154,3 +158,30 @@
 
 ---
 *每个阶段完成后或遇到错误时更新此文件*
+
+## 会话：2026-05-19
+
+### 阶段 7：Android 路径与资源修复
+- **状态：** complete
+- **开始时间：** 2026-05-19
+- 执行的操作：
+  - 读取现有规划文件与代码结构
+  - 确认采用 user_data_dir + 资源复制方案
+  - 记录 session-catchup 脚本路径错误
+  - 更新配置/资源复制逻辑与路径规范化
+  - 更新 Buildozer 打包资源配置
+  - 运行路径与资源相关测试
+- 创建/修改的文件：
+  - task_plan.md
+  - progress.md
+  - findings.md
+  - docs/superpowers/specs/2026-05-19-android-paths-design.md
+  - app/config.py
+  - app/runtime_assets.py
+  - app/data/loader.py
+  - app/main.py
+  - buildozer.spec
+  - tests/test_config_paths.py
+  - tests/test_runtime_assets.py
+  - tests/test_data_loader.py
+  - tests/test_app_entry.py
