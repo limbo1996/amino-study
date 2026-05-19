@@ -484,3 +484,12 @@ warn_on_root = 1
 #        buildozer --profile demo android debug
 #
 #   Environment variable overrides have priority over profile overrides.
+[app@minimal]
+title = Amino Study (Minimal)
+package.name = aminostudymin
+package.domain = com.example.aminostudy
+source.dir = .
+source.include_exts = py
+source.include_patterns =
+requirements = python3,kivy
+entrypoint = minimal_app.py

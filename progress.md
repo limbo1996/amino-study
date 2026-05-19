@@ -96,6 +96,7 @@
 | scheduler 单测 | python -m unittest tests/test_scheduler.py | 通过 | 通过 | pass |
 | app 入口单测 | python -m unittest tests/test_app_entry.py | 通过 | 通过 | pass |
 | crash log 单测 | python -m unittest tests/test_crash_logging.py | 通过 | 通过 | pass |
+| minimal app 单测 | python -m unittest tests/test_minimal_entry.py | 通过 | 通过 | pass |
 | CSV 导入单测 | python -m unittest tests/test_data_loader.py | 通过 | 通过 | pass |
 | SQLite 导入单测 | python -m unittest tests/test_db_seed.py | 通过 | 通过 | pass |
 | 启动初始化单测 | python -m unittest tests/test_bootstrap.py | 通过 | 通过 | pass |
@@ -204,3 +205,22 @@
   - app/crash_logging.py
   - main.py
   - tests/test_crash_logging.py
+
+## 会话：2026-05-19
+
+### 阶段 9：最小 Kivy 诊断 APK
+- **状态：** complete
+- **开始时间：** 2026-05-19
+- 执行的操作：
+  - 用户确认最小 Kivy 诊断方案
+  - 添加 minimal_app 入口与 profile
+  - 运行 minimal app 单测
+  - 打包最小诊断 APK
+- 创建/修改的文件：
+  - task_plan.md
+  - progress.md
+  - findings.md
+  - minimal_app.py
+  - tests/test_minimal_entry.py
+  - buildozer.spec
+  - docs/superpowers/specs/2026-05-19-minimal-kivy-diagnostic-design.md

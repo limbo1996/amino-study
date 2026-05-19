@@ -14,6 +14,7 @@
 - 图片路径规则：/Users/limbo/Project/aa_learn/fig/<单字母>.png
  - Android 运行需要将可写数据放在 App.user_data_dir，资源建议首次启动复制到该目录
  - 当前无法使用 adb/logcat，需在启动时写 crash.log 进行离线诊断
+ - 需要最小 Kivy APK 验证 Android 16 + 天玑 9500 运行时可用性
 
 ## 规划要点
 - 项目目录：app/（入口与配置）、app/screens（闪卡/测验/统计/设置）、app/services（调度/出题）、app/data（CSV 导入）、app/db（SQLite）、assets/、fig/、tests/
