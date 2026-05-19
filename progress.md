@@ -95,6 +95,7 @@
 |------|------|---------|---------|------|
 | scheduler 单测 | python -m unittest tests/test_scheduler.py | 通过 | 通过 | pass |
 | app 入口单测 | python -m unittest tests/test_app_entry.py | 通过 | 通过 | pass |
+| crash log 单测 | python -m unittest tests/test_crash_logging.py | 通过 | 通过 | pass |
 | CSV 导入单测 | python -m unittest tests/test_data_loader.py | 通过 | 通过 | pass |
 | SQLite 导入单测 | python -m unittest tests/test_db_seed.py | 通过 | 通过 | pass |
 | 启动初始化单测 | python -m unittest tests/test_bootstrap.py | 通过 | 通过 | pass |
@@ -185,3 +186,21 @@
   - tests/test_runtime_assets.py
   - tests/test_data_loader.py
   - tests/test_app_entry.py
+
+## 会话：2026-05-19
+
+### 阶段 8：Android 闪退诊断日志
+- **状态：** in_progress
+- **开始时间：** 2026-05-19
+- 执行的操作：
+  - 确认采用启动崩溃日志写入 user_data_dir 的诊断方案
+  - 记录 session-catchup 脚本路径错误
+  - 新增 crash log 写入模块与入口捕获
+  - 运行 crash logging 测试
+- 创建/修改的文件：
+  - task_plan.md
+  - progress.md
+  - findings.md
+  - app/crash_logging.py
+  - main.py
+  - tests/test_crash_logging.py
