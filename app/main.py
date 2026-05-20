@@ -21,7 +21,6 @@ try:
     from kivy.graphics import Color, Line, Rectangle
     from kivy.uix.boxlayout import BoxLayout
     from kivy.uix.button import Button
-    from kivy.uix.gridlayout import GridLayout
     from kivy.uix.image import Image
     from kivy.uix.label import Label
 except ModuleNotFoundError:
@@ -80,9 +79,9 @@ class AminoStudyApp(App):
         header = Label(
             text="",
             size_hint_y=None,
-            height=44,
+            height=72,
             font_name=ui_font_name,
-            font_size=16,
+            font_size=44,
             color=(0.7, 0.75, 0.8, 1),
         )
 
@@ -90,8 +89,7 @@ class AminoStudyApp(App):
             orientation="vertical",
             padding=24,
             spacing=12,
-            size_hint_y=None,
-            height=540,
+            size_hint_y=1,
         )
         card.canvas.before.clear()
         with card.canvas.before:
@@ -109,70 +107,70 @@ class AminoStudyApp(App):
 
         question_label = Label(
             text="",
-            size_hint_y=None,
-            height=80,
+            size_hint_y=0.40,
             font_name=ui_font_name,
-            font_size=26,
+            font_size=64,
             color=(0.12, 0.12, 0.12, 1),
         )
 
-        options_grid = GridLayout(cols=2, spacing=8, size_hint_y=None, height=96)
+        options_box = BoxLayout(orientation="vertical", spacing=8, size_hint_y=0.30)
+        row1 = BoxLayout(orientation="horizontal", spacing=8)
+        row2 = BoxLayout(orientation="horizontal", spacing=8)
         option_buttons: list[Button] = []
         labels = ["A", "B", "C", "D"]
-        for i in range(4):
-            btn = Button(
-                text="",
-                font_name=ui_font_name,
-                font_size=16,
-                background_color=(0.15, 0.4, 0.75, 1),
-                color=(1, 1, 1, 1),
-                size_hint_y=None,
-                height=44,
-            )
-            option_buttons.append(btn)
-            options_grid.add_widget(btn)
+        for i, row in enumerate([row1, row2]):
+            for j in range(2):
+                btn = Button(
+                    text="",
+                    font_name=ui_font_name,
+                    font_size=44,
+                    background_color=(0.15, 0.4, 0.75, 1),
+                    color=(1, 1, 1, 1),
+                )
+                option_buttons.append(btn)
+                row.add_widget(btn)
+        options_box.add_widget(row1)
+        options_box.add_widget(row2)
 
-        image_view = Image(size_hint_y=None, height=0, allow_stretch=True, keep_ratio=True)
+        image_view = Image(size_hint_y=0.15, allow_stretch=True, keep_ratio=True)
         image_view.opacity = 0
 
         feedback_label = Label(
             text="",
-            size_hint_y=None,
-            height=0,
+            size_hint_y=0.07,
             font_name=ui_font_name,
-            font_size=16,
+            font_size=44,
             color=(0.12, 0.12, 0.12, 1),
         )
         feedback_label.opacity = 0
 
         next_button = Button(
             text="Next",
-            size_hint_y=None,
-            height=0,
+            size_hint_y=0.08,
             background_color=(0.85, 0.5, 0.1, 1),
             color=(1, 1, 1, 1),
             font_name=ui_font_name,
-            font_size=16,
+            font_size=44,
         )
         next_button.opacity = 0
 
         stats_label = Label(
             text="",
             size_hint_y=None,
-            height=32,
+            height=56,
             font_name=ui_font_name,
-            font_size=14,
+            font_size=40,
             color=(0.7, 0.75, 0.8, 1),
         )
 
         reset_button = Button(
             text="Reset progress",
             size_hint_y=None,
-            height=40,
+            height=56,
             background_color=(0.2, 0.2, 0.2, 1),
             color=(0.9, 0.9, 0.9, 1),
             font_name=ui_font_name,
-            font_size=14,
+            font_size=36,
         )
 
         answer_state = {"selected": None, "is_correct": False}
@@ -188,19 +186,13 @@ class AminoStudyApp(App):
                 btn.disabled = not enabled
 
         def show_answer_area():
-            image_view.height = 160
             image_view.opacity = 1
-            feedback_label.height = 36
             feedback_label.opacity = 1
-            next_button.height = 48
             next_button.opacity = 1
 
         def hide_answer_area():
-            image_view.height = 0
             image_view.opacity = 0
-            feedback_label.height = 0
             feedback_label.opacity = 0
-            next_button.height = 0
             next_button.opacity = 0
 
         def refresh_view():
@@ -273,12 +265,44 @@ class AminoStudyApp(App):
             if not question:
                 return
 
+            is_correct = answer_state["is_correct"]
+
             submit_answer(
                 paths.db_path,
                 plan_id=state.plan_id,
                 question=question,
-                is_correct=answer_state["is_correct"],
+                is_correct=is_correct,
             )
+
+            if is_correct:
+                from datetime import date
+                from app.db.learning_repo import get_daily_streak
+                streak = get_daily_streak(
+                    paths.db_path,
+                    amino_id=question["amino_id"],
+                    today=date.today().isoformat(),
+                )
+                question["daily_streak"] = streak
+                if streak < 5:
+                    import random
+                    new_format = random.choice(["abbr1", "abbr3"])
+                    question["format"] = new_format
+                    question["answer"] = question.get("name_en", "")
+                    all_candidates = state.questions
+                    correct_answer = question.get(new_format, "")
+                    other_values = [
+                        q.get(new_format, "") for q in all_candidates
+                        if q.get(new_format, "") != correct_answer and q.get(new_format, "")
+                    ]
+                    if len(other_values) >= 3:
+                        new_options = random.sample(other_values, 3)
+                        new_options.append(correct_answer)
+                        random.shuffle(new_options)
+                        question["options"] = new_options
+                        question["answer"] = correct_answer
+                    refresh_view()
+                    return
+
             state.advance()
             refresh_view()
 
@@ -295,7 +319,7 @@ class AminoStudyApp(App):
 
         root.add_widget(header)
         card.add_widget(question_label)
-        card.add_widget(options_grid)
+        card.add_widget(options_box)
         card.add_widget(image_view)
         card.add_widget(feedback_label)
         card.add_widget(next_button)

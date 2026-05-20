@@ -7,6 +7,25 @@ from pathlib import Path
 from app.services.scheduler import compute_next_review
 
 
+def get_daily_streak(db_path: Path, *, amino_id: int, today: str) -> int:
+    with sqlite3.connect(db_path) as conn:
+        row = conn.execute(
+            "SELECT daily_streak, daily_streak_date FROM learning_state WHERE amino_id = ?",
+            (amino_id,),
+        ).fetchone()
+        if row is None:
+            return 0
+        streak, streak_date = row
+        if streak_date != today:
+            conn.execute(
+                "UPDATE learning_state SET daily_streak = 0, daily_streak_date = ? WHERE amino_id = ?",
+                (today, amino_id),
+            )
+            conn.commit()
+            return 0
+        return min(streak, 5)
+
+
 def get_or_create_daily_plan(db_path: Path, *, date: str, new_quota: int = 5) -> dict:
     with sqlite3.connect(db_path) as conn:
         row = conn.execute(
@@ -121,10 +140,11 @@ def record_answer(
     is_correct: bool,
     now: datetime,
 ) -> None:
+    today = now.date().isoformat()
     with sqlite3.connect(db_path) as conn:
         row = conn.execute(
             """
-            SELECT wrong_count, right_streak
+            SELECT wrong_count, right_streak, daily_streak, daily_streak_date
             FROM learning_state
             WHERE amino_id = ?
             """,
@@ -134,37 +154,63 @@ def record_answer(
             conn.execute(
                 """
                 INSERT INTO learning_state
-                (amino_id, status, wrong_count, right_streak)
-                VALUES (?, 'new', 0, 0)
+                (amino_id, status, wrong_count, right_streak, daily_streak, daily_streak_date)
+                VALUES (?, 'new', 0, 0, 0, ?)
                 """,
-                (amino_id,),
+                (amino_id, today),
             )
             conn.commit()
-            row = (0, 0)
+            row = (0, 0, 0, today)
 
-        wrong_count, right_streak = row
-        next_review_at, next_streak, next_wrong = compute_next_review(
-            now=now,
-            right_streak=right_streak,
-            wrong_count=wrong_count,
-            is_correct=is_correct,
-        )
+        wrong_count, right_streak, daily_streak, streak_date = row
+        if streak_date != today:
+            daily_streak = 0
 
-        conn.execute(
-            """
-            UPDATE learning_state
-            SET last_seen_at = ?, next_review_at = ?, wrong_count = ?, right_streak = ?
-            WHERE amino_id = ?
-            """,
-            (
-                now.isoformat(),
-                next_review_at.isoformat(),
-                next_wrong,
-                next_streak,
-                amino_id,
-            ),
-        )
-        conn.commit()
+        if is_correct:
+            daily_streak += 1
+            if daily_streak >= 5:
+                next_review_at, next_streak, next_wrong = compute_next_review(
+                    now=now,
+                    right_streak=right_streak,
+                    wrong_count=wrong_count,
+                    is_correct=True,
+                )
+                conn.execute(
+                    """
+                    UPDATE learning_state
+                    SET last_seen_at = ?, next_review_at = ?, wrong_count = ?, right_streak = ?,
+                        daily_streak = 5, daily_streak_date = ?
+                    WHERE amino_id = ?
+                    """,
+                    (now.isoformat(), next_review_at.isoformat(), next_wrong, next_streak, today, amino_id),
+                )
+                conn.commit()
+                conn.execute(
+                    "UPDATE daily_plan SET new_done = new_done + 1 WHERE plan_date = ?",
+                    (today,),
+                )
+                conn.commit()
+            else:
+                conn.execute(
+                    """
+                    UPDATE learning_state
+                    SET daily_streak = ?, daily_streak_date = ?
+                    WHERE amino_id = ?
+                    """,
+                    (daily_streak, today, amino_id),
+                )
+                conn.commit()
+        else:
+            conn.execute(
+                """
+                UPDATE learning_state
+                SET wrong_count = wrong_count + 1, right_streak = 0,
+                    daily_streak = 0, daily_streak_date = ?
+                WHERE amino_id = ?
+                """,
+                (today, amino_id),
+            )
+            conn.commit()
 
 
 def _plan_row_to_dict(row: tuple) -> dict:

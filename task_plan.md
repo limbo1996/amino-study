@@ -4,7 +4,7 @@
 使用 Kivy + SQLite 构建本地单人学习 App，支持闪卡与测验、错题优先与艾宾浩斯复习、每日新学 5 个、可重置进度。
 
 ## 当前阶段
-阶段 11
+阶段 13
 
 ## 各阶段
 
@@ -107,7 +107,24 @@
 - [x] 启动时注册字体并统一使用
 - [x] 缺失字体时回退 Roboto
 - [x] 更新/新增测试
-- [ ] 打包 APK 并验证
+- [x] 打包 APK 并验证
+- **状态：** complete
+
+### 阶段 12：固定比例布局修复
+- [x] 设计：固定 size_hint_y + opacity 切换
+- [x] 实现：移除动态 size_hint_y，固定 card 子控件比例
+- [x] 打包验证
+- **状态：** complete
+
+### 阶段 13：5 连对今日进度系统
+- [x] 设计：daily_streak 字段 + 5 连对完成 + 答错全清零
+- [ ] 迁移 DB schema：添加 daily_streak / daily_streak_date 列
+- [ ] 改造 learning_repo：新增 streak 读写 + 修改计划计数
+- [ ] 改造 session：按 streak 过滤已完成 + 循环出题
+- [ ] 改造 scheduler：正确/错误时分别更新 streak
+- [ ] UI：显示进度 X
+- [ ] 单测覆盖新逻辑
+- [ ] 打包验证
 - **状态：** in_progress
 
 ## 关键问题

@@ -16,7 +16,8 @@ def build_header_text(plan: dict, *, index: int, total: int) -> str:
 def build_question_prompt(question: dict) -> str:
     name_cn = question.get("name_cn", "")
     name_en = question.get("name_en", "")
-    return f"{name_cn} ({name_en})"
+    streak = question.get("daily_streak", 0)
+    return f"{name_cn} ({name_en})  进度：{streak}"
 
 
 def build_options_text(question: dict) -> str:

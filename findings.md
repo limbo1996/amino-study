@@ -18,6 +18,8 @@
  - 若最小 APK 仍闪退，需尝试仅 arm64-v8a 架构打包
  - 模拟器闪退已定位：Label.font_name 传入 None 会触发 ValueError
  - 计划打包 Noto Sans SC 并统一 font_name 兜底
+- Layout bug 根因：show_answer_area/hide_answer_area 动态修改 size_hint_y → Kivy BoxLayout 在 Android 上重布局导致子控件位置错乱（题目消失、选项跑位）
+- 解决方案：固定 size_hint_y 比例，仅用 opacity 切换可见性，永不动态改 size_hint_y
  - buildozer.spec 目前仅 include fig/*.png 和 CSV，字体需加入 include_patterns 才会打包
  - 当前字体资源位于 skills 目录，已被 buildozer 排除
 

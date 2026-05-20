@@ -254,6 +254,20 @@
   - app/fonts.py
   - app/main.py
   - buildozer.spec
-  - tests/test_fonts.py
+   - tests/test_fonts.py
+   - task_plan.md
+   - progress.md
+
+## 会话：2026-05-20（续）
+
+### 阶段 12：固定比例布局修复
+- **状态：** in_progress
+- **开始时间：** 2026-05-20
+- 执行的操作：
+  - 定位根因：show/hide 动态改 size_hint_y → BoxLayout re-layout 错乱
+  - 选定方案：固定比例 + opacity 切换
+  - 写入设计文档
+- 创建/修改的文件：
+  - docs/superpowers/specs/2026-05-20-layout-fix-design.md
   - task_plan.md
   - progress.md

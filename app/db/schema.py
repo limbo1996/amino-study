@@ -28,9 +28,11 @@ def init_db(db_path: Path) -> None:
                 status TEXT NOT NULL,
                 last_seen_at TEXT,
                 next_review_at TEXT,
-                wrong_count INTEGER NOT NULL DEFAULT 0,
-                right_streak INTEGER NOT NULL DEFAULT 0,
-                FOREIGN KEY (amino_id) REFERENCES amino_acids(id)
+                    wrong_count INTEGER NOT NULL DEFAULT 0,
+                    right_streak INTEGER NOT NULL DEFAULT 0,
+                    daily_streak INTEGER NOT NULL DEFAULT 0,
+                    daily_streak_date TEXT NOT NULL DEFAULT '',
+                    FOREIGN KEY (amino_id) REFERENCES amino_acids(id)
             )
             """
         )
@@ -46,3 +48,13 @@ def init_db(db_path: Path) -> None:
             """
         )
         conn.commit()
+
+
+def migrate_add_daily_streak(db_path: Path) -> None:
+    try:
+        with sqlite3.connect(db_path) as conn:
+            conn.execute("ALTER TABLE learning_state ADD COLUMN daily_streak INTEGER NOT NULL DEFAULT 0")
+            conn.execute("ALTER TABLE learning_state ADD COLUMN daily_streak_date TEXT NOT NULL DEFAULT ''")
+            conn.commit()
+    except sqlite3.OperationalError:
+        pass

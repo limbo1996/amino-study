@@ -4,21 +4,25 @@ from datetime import datetime
 import random
 from pathlib import Path
 
-from app.db.learning_repo import increment_plan_counts, record_answer
+from app.db.learning_repo import get_daily_streak, record_answer
 from app.services.plan import build_today_plan
 from app.services.quiz import generate_abbr_question
 
 
 def build_session(db_path: Path, *, now: datetime, rng_seed: int | None = None) -> dict:
+    today = now.date().isoformat()
     plan_bundle = build_today_plan(db_path, now=now)
-    questions = []
-
-    if rng_seed is not None:
-        random.seed(rng_seed)
 
     candidate_ids = [review["amino_id"] for review in plan_bundle["reviews"]]
     candidate_ids.extend(item["id"] for item in plan_bundle["new_items"])
-    candidates = _fetch_items_by_ids(db_path, candidate_ids)
+
+    active_ids = [
+        cid for cid in candidate_ids
+        if get_daily_streak(db_path, amino_id=cid, today=today) < 5
+    ]
+
+    questions = []
+    candidates = _fetch_items_by_ids(db_path, active_ids)
 
     if len(candidates) >= 4:
         for candidate in candidates:
@@ -31,6 +35,7 @@ def build_session(db_path: Path, *, now: datetime, rng_seed: int | None = None) 
                 {
                     "type": "choice",
                     "amino_id": candidate["id"],
+                    "daily_streak": get_daily_streak(db_path, amino_id=candidate["id"], today=today),
                     "format": question["format"],
                     "options": question["options"],
                     "answer": question["answer"],
@@ -59,7 +64,6 @@ def record_session_answer(
     now: datetime,
 ) -> None:
     record_answer(db_path, amino_id=amino_id, is_correct=is_correct, now=now)
-    increment_plan_counts(db_path, plan_id=plan_id, new_done=1)
 
 
 def _fetch_items_by_ids(db_path: Path, ids: list[int]) -> list[dict]:
