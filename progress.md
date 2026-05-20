@@ -224,3 +224,36 @@
   - tests/test_minimal_entry.py
   - buildozer.spec
   - docs/superpowers/specs/2026-05-19-minimal-kivy-diagnostic-design.md
+
+## 会话：2026-05-19
+
+### 阶段 10：arm64-only 最小诊断 APK
+- **状态：** in_progress
+- **开始时间：** 2026-05-19
+- 执行的操作：
+  - 用户确认仅打包 arm64-v8a 诊断 APK
+- 创建/修改的文件：
+  - task_plan.md
+  - progress.md
+
+## 会话：2026-05-20
+
+### 阶段 11：Android 字体打包与 font_name 修复
+- **状态：** in_progress
+- **开始时间：** 2026-05-20
+- 执行的操作：
+  - 定位闪退原因：Label.font_name 为 None
+  - 选定方案：打包 Noto Sans SC 并统一 font_name 兜底
+  - 写入设计文档并提交
+  - 添加字体选择模块与单测
+  - 更新 Kivy 入口统一 font_name
+  - 打包字体资源到 buildozer.spec
+  - 运行 test_fonts 与 test_app_entry
+- 创建/修改的文件：
+  - docs/superpowers/specs/2026-05-20-font-fallback-design.md
+  - app/fonts.py
+  - app/main.py
+  - buildozer.spec
+  - tests/test_fonts.py
+  - task_plan.md
+  - progress.md

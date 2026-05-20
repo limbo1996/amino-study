@@ -15,6 +15,11 @@
  - Android 运行需要将可写数据放在 App.user_data_dir，资源建议首次启动复制到该目录
  - 当前无法使用 adb/logcat，需在启动时写 crash.log 进行离线诊断
  - 需要最小 Kivy APK 验证 Android 16 + 天玑 9500 运行时可用性
+ - 若最小 APK 仍闪退，需尝试仅 arm64-v8a 架构打包
+ - 模拟器闪退已定位：Label.font_name 传入 None 会触发 ValueError
+ - 计划打包 Noto Sans SC 并统一 font_name 兜底
+ - buildozer.spec 目前仅 include fig/*.png 和 CSV，字体需加入 include_patterns 才会打包
+ - 当前字体资源位于 skills 目录，已被 buildozer 排除
 
 ## 规划要点
 - 项目目录：app/（入口与配置）、app/screens（闪卡/测验/统计/设置）、app/services（调度/出题）、app/data（CSV 导入）、app/db（SQLite）、assets/、fig/、tests/

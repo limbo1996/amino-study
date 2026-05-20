@@ -22,7 +22,7 @@ source.include_exts = py,png,jpg,kv,atlas,csv,ttf,sh
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
-source.include_patterns = fig/*.png,deepseek_csv_20260513_f1933c.csv
+source.include_patterns = fig/*.png,deepseek_csv_20260513_f1933c.csv,assets/fonts/*.ttf
 
 # (list) Source files to exclude (leave empty to not exclude anything)
 #source.exclude_exts = spec
@@ -493,3 +493,4 @@ source.include_exts = py
 source.include_patterns =
 requirements = python3,kivy
 entrypoint = minimal_app.py
+android.archs = arm64-v8a

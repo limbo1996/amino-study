@@ -4,7 +4,7 @@
 使用 Kivy + SQLite 构建本地单人学习 App，支持闪卡与测验、错题优先与艾宾浩斯复习、每日新学 5 个、可重置进度。
 
 ## 当前阶段
-阶段 9
+阶段 11
 
 ## 各阶段
 
@@ -94,6 +94,22 @@
 - [x] 打包诊断 APK 并交付
 - **状态：** complete
 
+### 阶段 10：arm64-only 最小诊断 APK
+- [ ] 设计：仅打包 arm64-v8a
+- [ ] 更新 minimal profile 架构配置
+- [ ] 打包 arm64-only APK
+- [ ] 交付并验证
+- **状态：** in_progress
+
+### 阶段 11：Android 字体打包与 font_name 修复
+- [x] 设计：打包 CJK 字体并统一 font_name 兜底
+- [x] 引入 Noto Sans SC 字体资源
+- [x] 启动时注册字体并统一使用
+- [x] 缺失字体时回退 Roboto
+- [x] 更新/新增测试
+- [ ] 打包 APK 并验证
+- **状态：** in_progress
+
 ## 关键问题
 1. 无
 
@@ -107,7 +123,8 @@
 ## 遇到的错误
 | 错误 | 尝试次数 | 解决方案 |
 |------|---------|---------|
-| session-catchup.py 路径缺失 | 2 | 记录为已知环境问题，继续手动更新规划文件 |
+| session-catchup.py 路径缺失 | 3 | 记录为已知环境问题，继续手动更新规划文件 |
+| 模拟器闪退：ValueError None is not allowed for Label.font_name | 1 | 计划打包 CJK 字体并统一 font_name 兜底 |
 
 ## 备注
 - 每次修改必须先 brainstorming，再 planning-with-files-zh，再 test-driven-development，结束后 ralph 确认。
