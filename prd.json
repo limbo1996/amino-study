@@ -59,7 +59,7 @@
       ],
       "priority": 4,
       "passes": true,
-      "notes": "已实现：app/main.py: on_next()"
+        "notes": "已实现：app/main.py: on_next() 答对/答错均 state.advance()，轮完全部后 rebuild session 刷新 streak 并过滤已完成项。refresh_view() 动态获取 daily_streak 显示实时进度。"
     },
     {
       "id": "US-005",
