@@ -12,14 +12,23 @@ from app.services.quiz import generate_abbr_question
 def build_session(db_path: Path, *, now: datetime, rng_seed: int | None = None) -> dict:
     today = now.date().isoformat()
     plan_bundle = build_today_plan(db_path, now=now)
+    plan = plan_bundle["plan"]
 
-    candidate_ids = [review["amino_id"] for review in plan_bundle["reviews"]]
-    candidate_ids.extend(item["id"] for item in plan_bundle["new_items"])
+    review_ids = [review["amino_id"] for review in plan_bundle["reviews"]]
+    new_item_ids = [item["id"] for item in plan_bundle["new_items"]]
 
-    active_ids = [
-        cid for cid in candidate_ids
-        if get_daily_streak(db_path, amino_id=cid, today=today) < 5
+    review_active = [
+        rid for rid in review_ids
+        if get_daily_streak(db_path, amino_id=rid, today=today) < 5
     ]
+
+    new_slots = max(plan["new_quota"] - plan["new_done"], 0)
+    new_active = [
+        nid for nid in new_item_ids
+        if get_daily_streak(db_path, amino_id=nid, today=today) < 5
+    ][:new_slots]
+
+    active_ids = review_active + new_active
 
     questions = []
     candidates = _fetch_items_by_ids(db_path, active_ids)

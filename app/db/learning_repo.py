@@ -109,16 +109,17 @@ def list_due_reviews(db_path: Path, *, now: datetime) -> list[dict]:
 
 def list_new_items(db_path: Path, *, limit: int) -> list[dict]:
     with sqlite3.connect(db_path) as conn:
-        rows = conn.execute(
-            """
+        sql = """
             SELECT id, name_cn, name_en, abbr3, abbr1, image_path
             FROM amino_acids
             WHERE id NOT IN (SELECT amino_id FROM learning_state)
             ORDER BY id
-            LIMIT ?
-            """,
-            (limit,),
-        ).fetchall()
+        """
+        if limit >= 0:
+            sql += " LIMIT ?"
+            rows = conn.execute(sql, (limit,)).fetchall()
+        else:
+            rows = conn.execute(sql).fetchall()
 
     return [
         {

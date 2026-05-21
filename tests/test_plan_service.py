@@ -52,7 +52,7 @@ class TestPlanService(unittest.TestCase):
 
             plan = build_today_plan(db_path, now=now)
 
-            self.assertEqual(len(plan["new_items"]), 5)
+            self.assertEqual(len(plan["new_items"]), 6)
 
 
 if __name__ == "__main__":

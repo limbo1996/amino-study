@@ -274,34 +274,33 @@ class AminoStudyApp(App):
                 is_correct=is_correct,
             )
 
-            if is_correct:
-                from datetime import date
-                from app.db.learning_repo import get_daily_streak
-                streak = get_daily_streak(
-                    paths.db_path,
-                    amino_id=question["amino_id"],
-                    today=date.today().isoformat(),
-                )
-                question["daily_streak"] = streak
-                if streak < 5:
-                    import random
-                    new_format = random.choice(["abbr1", "abbr3"])
-                    question["format"] = new_format
-                    question["answer"] = question.get("name_en", "")
-                    all_candidates = state.questions
-                    correct_answer = question.get(new_format, "")
-                    other_values = [
-                        q.get(new_format, "") for q in all_candidates
-                        if q.get(new_format, "") != correct_answer and q.get(new_format, "")
-                    ]
-                    if len(other_values) >= 3:
-                        new_options = random.sample(other_values, 3)
-                        new_options.append(correct_answer)
-                        random.shuffle(new_options)
-                        question["options"] = new_options
-                        question["answer"] = correct_answer
-                    refresh_view()
-                    return
+            from datetime import date
+            from app.db.learning_repo import get_daily_streak
+            streak = get_daily_streak(
+                paths.db_path,
+                amino_id=question["amino_id"],
+                today=date.today().isoformat(),
+            )
+            question["daily_streak"] = streak
+
+            if streak < 5:
+                import random
+                new_format = random.choice(["abbr1", "abbr3"])
+                question["format"] = new_format
+                all_candidates = state.questions
+                correct_answer = question.get(new_format, "")
+                other_values = [
+                    q.get(new_format, "") for q in all_candidates
+                    if q.get(new_format, "") != correct_answer and q.get(new_format, "")
+                ]
+                if len(other_values) >= 3:
+                    new_options = random.sample(other_values, 3)
+                    new_options.append(correct_answer)
+                    random.shuffle(new_options)
+                    question["options"] = new_options
+                    question["answer"] = correct_answer
+                refresh_view()
+                return
 
             state.advance()
             refresh_view()

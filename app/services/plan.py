@@ -9,8 +9,7 @@ from app.db.learning_repo import get_or_create_daily_plan, list_due_reviews, lis
 def build_today_plan(db_path: Path, *, now: datetime) -> dict:
     plan = get_or_create_daily_plan(db_path, date=now.date().isoformat())
     reviews = list_due_reviews(db_path, now=now)
-    remaining = max(plan["new_quota"] - plan["new_done"], 0)
-    new_items = list_new_items(db_path, limit=remaining)
+    new_items = list_new_items(db_path, limit=-1)
 
     return {
         "plan": plan,
