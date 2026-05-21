@@ -269,6 +269,7 @@ class AminoStudyApp(App):
             show_answer_area()
 
         def on_next(_instance):
+            nonlocal state
             question = state.current_question()
             if not question:
                 return

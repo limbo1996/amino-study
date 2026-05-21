@@ -258,6 +258,30 @@
    - task_plan.md
    - progress.md
 
+## 会话：2026-05-21
+
+### 阶段 13：修复答题后闪退（nonlocal state 缺失）
+- **状态：** complete
+- **开始时间：** 2026-05-21
+- **问题描述：** 回答一个问题后 App 直接闪退，无论答案对错
+- **根因分析：** `app/main.py` 的 `on_next()` 函数中使用了 `state = load_study_state(...)` 重新赋值，但未声明 `nonlocal state`。Python 将整个函数内的 `state` 视为局部变量，导致 `state.advance()` 触发 `UnboundLocalError` 崩溃
+- **修复方案：** 在 `on_next()` 函数开头添加 `nonlocal state` 声明，与 `on_reset()` 保持一致
+- 创建/修改的文件：
+  - app/main.py (添加 nonlocal state 声明)
+  - progress.md
+
+## 五问检查
+| 问题 | 答案 |
+|------|------|
+| 我在哪里？ | 阶段 13 |
+| 我要去哪里？ | 修复答题后闪退问题 |
+| 目标是什么？ | 见 task_plan.md |
+| 我学到了什么？ | Python 闭包中赋值操作会使变量变为局部变量，需显式声明 nonlocal |
+| 我做了什么？ | 见上方记录 |
+
+---
+*每个阶段完成后或遇到错误时更新此文件*
+
 ## 会话：2026-05-20（续）
 
 ### 阶段 12：固定比例布局修复
