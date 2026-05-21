@@ -118,14 +118,14 @@
 
 ### 阶段 13：5 连对今日进度系统
 - [x] 设计：daily_streak 字段 + 5 连对完成 + 答错全清零
-- [ ] 迁移 DB schema：添加 daily_streak / daily_streak_date 列
-- [ ] 改造 learning_repo：新增 streak 读写 + 修改计划计数
-- [ ] 改造 session：按 streak 过滤已完成 + 循环出题
-- [ ] 改造 scheduler：正确/错误时分别更新 streak
-- [ ] UI：显示进度 X
-- [ ] 单测覆盖新逻辑
-- [ ] 打包验证
-- **状态：** in_progress
+- [x] 迁移 DB schema
+- [x] 改造 learning_repo
+- [x] 改造 session + 修复配额
+- [x] UI：显示进度 X
+- [x] 单测覆盖新逻辑
+- [x] 修复：答对/答错均跳题，轮流循环
+- [x] 打包验证
+- **状态：** complete
 
 ## 关键问题
 1. 无
