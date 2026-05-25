@@ -8,3 +8,14 @@ data/*.db
 *.aab
 .idea/
 .superpowers/
+
+# Dev environment files
+skills/
+archive/
+venv/
+.env
+
+# Planning scratch files
+progress.md
+findings.md
+task_plan.md

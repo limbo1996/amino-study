@@ -1,21 +1,21 @@
-中文名,英文名,三字缩写,单字缩写,图片路径
-丙氨酸,Alanine,Ala,A,/Users/limbo/Project/aa_learn/fig/A.png
-精氨酸,Arginine,Arg,R,/Users/limbo/Project/aa_learn/fig/R.png
-天冬酰胺,Asparagine,Asn,N,/Users/limbo/Project/aa_learn/fig/N.png
-天冬氨酸,Aspartic acid,Asp,D,/Users/limbo/Project/aa_learn/fig/D.png
-半胱氨酸,Cysteine,Cys,C,/Users/limbo/Project/aa_learn/fig/C.png
-谷氨酰胺,Glutamine,Gln,Q,/Users/limbo/Project/aa_learn/fig/Q.png
-谷氨酸,Glutamic acid,Glu,E,/Users/limbo/Project/aa_learn/fig/E.png
-甘氨酸,Glycine,Gly,G,/Users/limbo/Project/aa_learn/fig/G.png
-组氨酸,Histidine,His,H,/Users/limbo/Project/aa_learn/fig/H.png
-异亮氨酸,Isoleucine,Ile,I,/Users/limbo/Project/aa_learn/fig/I.png
-亮氨酸,Leucine,Leu,L,/Users/limbo/Project/aa_learn/fig/L.png
-赖氨酸,Lysine,Lys,K,/Users/limbo/Project/aa_learn/fig/K.png
-甲硫氨酸,Methionine,Met,M,/Users/limbo/Project/aa_learn/fig/M.png
-苯丙氨酸,Phenylalanine,Phe,F,/Users/limbo/Project/aa_learn/fig/F.png
-脯氨酸,Proline,Pro,P,/Users/limbo/Project/aa_learn/fig/P.png
-丝氨酸,Serine,Ser,S,/Users/limbo/Project/aa_learn/fig/S.png
-苏氨酸,Threonine,Thr,T,/Users/limbo/Project/aa_learn/fig/T.png
-色氨酸,Tryptophan,Trp,W,/Users/limbo/Project/aa_learn/fig/W.png
-酪氨酸,Tyrosine,Tyr,Y,/Users/limbo/Project/aa_learn/fig/Y.png
-缬氨酸,Valine,Val,V,/Users/limbo/Project/aa_learn/fig/V.png
+中文名,英文名,三字缩写,单字缩写,图片路径,性质
+丙氨酸,Alanine,Ala,A,fig/A.png,非极性脂肪族
+精氨酸,Arginine,Arg,R,fig/R.png,碱性（带正电）
+天冬酰胺,Asparagine,Asn,N,fig/N.png,极性不带电
+天冬氨酸,Aspartic acid,Asp,D,fig/D.png,酸性（带负电）
+半胱氨酸,Cysteine,Cys,C,fig/C.png,极性不带电
+谷氨酰胺,Glutamine,Gln,Q,fig/Q.png,极性不带电
+谷氨酸,Glutamic acid,Glu,E,fig/E.png,酸性（带负电）
+甘氨酸,Glycine,Gly,G,fig/G.png,非极性脂肪族
+组氨酸,Histidine,His,H,fig/H.png,碱性（带正电）
+异亮氨酸,Isoleucine,Ile,I,fig/I.png,非极性脂肪族
+亮氨酸,Leucine,Leu,L,fig/L.png,非极性脂肪族
+赖氨酸,Lysine,Lys,K,fig/K.png,碱性（带正电）
+甲硫氨酸,Methionine,Met,M,fig/M.png,非极性脂肪族
+苯丙氨酸,Phenylalanine,Phe,F,fig/F.png,芳香族
+脯氨酸,Proline,Pro,P,fig/P.png,非极性脂肪族
+丝氨酸,Serine,Ser,S,fig/S.png,极性不带电
+苏氨酸,Threonine,Thr,T,fig/T.png,极性不带电
+色氨酸,Tryptophan,Trp,W,fig/W.png,芳香族
+酪氨酸,Tyrosine,Tyr,Y,fig/Y.png,芳香族
+缬氨酸,Valine,Val,V,fig/V.png,非极性脂肪族
