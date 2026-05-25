@@ -18,6 +18,7 @@ venv/
 # OpenCode dev files
 AGENTS.md
 opencode.json
+docs/
 
 # Planning scratch files
 progress.md
