@@ -15,6 +15,10 @@ archive/
 venv/
 .env
 
+# OpenCode dev files
+AGENTS.md
+opencode.json
+
 # Planning scratch files
 progress.md
 findings.md
