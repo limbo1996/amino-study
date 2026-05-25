@@ -1,148 +1,59 @@
-# 任务计划：氨基酸记忆 Android 应用
+# 任务计划：在题目中显示氨基酸「性质」
 
 ## 目标
-使用 Kivy + SQLite 构建本地单人学习 App，支持闪卡与测验、错题优先与艾宾浩斯复习、每日新学 5 个、可重置进度。
+在 quiz 题目中，将 CSV 中的「性质」列以第二行的形式展示在氨基酸名称下方，第一行字号64，第二行字号28。
 
 ## 当前阶段
-阶段 13
+阶段 2
 
 ## 各阶段
 
-### 阶段 1：需求与发现
-- [x] 确认数据源与图片路径
-- [x] 固定学习与复习规则
+### 阶段 1：需求与发现 ✅
+- [x] 理解用户意图
+- [x] 确定约束条件和需求
 - [x] 将发现记录到 findings.md
-- **状态：** complete
+- **状态：** complete（已在 brainstorming 阶段完成）
 
 ### 阶段 2：规划与结构
-- [x] 确定项目目录与数据库结构
-- [x] 写入计划与决策
-- **状态：** complete
+- [ ] 确定技术方案
+- [ ] 确认所有改动文件和顺序
+- [ ] 记录决策及理由
+- **状态：** in_progress
 
 ### 阶段 3：实现
-- [x] 编写调度逻辑的测试（RED）
-- [x] 实现最小调度逻辑（GREEN）
-- [x] 编写应用入口测试（RED）
-- [x] 实现最小应用入口（GREEN）
-- [x] 编写 CSV 导入测试（RED）
-- [x] 实现 CSV 导入逻辑（GREEN）
-- [x] 编写 SQLite 初始化与导入测试（RED）
-- [x] 实现 SQLite 初始化与导入逻辑（GREEN）
-- [x] 编写启动初始化测试（RED）
-- [x] 实现启动初始化接入（GREEN）
-- [x] 初始化项目结构与数据层
-- [x] 编写学习调度持久化测试（RED）
-- [x] 实现学习调度持久化逻辑（GREEN）
-- [x] 编写计划构建测试（RED）
-- [x] 实现计划构建逻辑（GREEN）
-- [x] 编写出题逻辑测试（RED）
-- [x] 实现出题逻辑（GREEN）
-- [x] 编写学习会话服务测试（RED）
-- [x] 实现学习会话服务（GREEN）
-- [x] 编写计划计数更新测试（RED）
-- [x] 实现计划计数更新逻辑（GREEN）
-- [x] 实现学习调度与出题逻辑
-- [x] 编写学习界面测试（RED）
-- [x] 实现学习界面最小 UI（GREEN）
-- [x] 编写学习图片展示测试（RED）
-- [x] 实现学习图片展示（GREEN）
-- [x] 编写统计/设置界面测试（RED）
-- [x] 实现统计/设置界面最小 UI（GREEN）
-- [x] 编写重置服务测试（RED）
-- [x] 实现重置服务并接入UI（GREEN）
-- [x] 实现 Kivy UI（闪卡/测验/统计/设置）
-- **状态：** complete
-
-### 阶段 4：测试与验证
-- [x] 运行单元测试
-- [x] 验证规则：每日新学 5 + 艾宾浩斯 + 错题优先 + 重置
-- [x] 记录测试结果到 progress.md
-- **状态：** complete
-
-### 阶段 5：交付
-- [ ] 确认文件清单与文档
-- [ ] 交付并说明后续步骤
+- [ ] 按 TDD 流程编写测试 → 实现代码
+- [ ] 先写测试，再写实现
+- [ ] 增量测试
 - **状态：** pending
 
-### 阶段 6：Quiz 模式重构
-- [x] 改造 quiz.py 出题逻辑：每题独立随机 abbr1/abbr3，prompt 改为中文名（英文名）
-- [x] 改造 session.py 会话编排：移除 session 级格式选择
-- [x] 改造 study_screen.py + main.py UI：移除输入框，新增 4 选项按钮 + 对错反馈 + 结构式图片 + 下一题
-- [x] 更新测试：quiz 测试、session 测试、study_screen 测试
-- [x] 运行全量测试验证
-- **状态：** complete
+### 阶段 4：测试与验证
+- [ ] 运行所有测试确保无回归
+- [ ] 将测试结果记录到 progress.md
+- [ ] 修复发现的问题
+- **状态：** pending
 
-### 阶段 7：Android 路径与资源修复
-- [x] 设计：DB 迁移至 user_data_dir，资源首次启动复制
-- [x] 更新配置与加载逻辑（DB/CSV/图片路径）
-- [x] 更新 Buildozer 打包资源配置
-- [x] 补充/更新测试
-- [x] 运行测试并记录结果
-- **状态：** complete
-
-### 阶段 8：Android 闪退诊断日志
-- [x] 设计：启动崩溃日志写入 user_data_dir
-- [x] 更新入口与日志写入逻辑
-- [x] 更新/补充测试
-- [ ] 打包诊断版 APK
-- **状态：** in_progress
-
-### 阶段 9：最小 Kivy 诊断 APK
-- [x] 设计：最小 Kivy 启动验证
-- [x] 新增独立入口与诊断 profile
-- [x] 补充测试
-- [x] 打包诊断 APK 并交付
-- **状态：** complete
-
-### 阶段 10：arm64-only 最小诊断 APK
-- [ ] 设计：仅打包 arm64-v8a
-- [ ] 更新 minimal profile 架构配置
-- [ ] 打包 arm64-only APK
-- [ ] 交付并验证
-- **状态：** in_progress
-
-### 阶段 11：Android 字体打包与 font_name 修复
-- [x] 设计：打包 CJK 字体并统一 font_name 兜底
-- [x] 引入 Noto Sans SC 字体资源
-- [x] 启动时注册字体并统一使用
-- [x] 缺失字体时回退 Roboto
-- [x] 更新/新增测试
-- [x] 打包 APK 并验证
-- **状态：** complete
-
-### 阶段 12：固定比例布局修复
-- [x] 设计：固定 size_hint_y + opacity 切换
-- [x] 实现：移除动态 size_hint_y，固定 card 子控件比例
-- [x] 打包验证
-- **状态：** complete
-
-### 阶段 13：5 连对今日进度系统
-- [x] 设计：daily_streak 字段 + 5 连对完成 + 答错全清零
-- [x] 迁移 DB schema
-- [x] 改造 learning_repo
-- [x] 改造 session + 修复配额
-- [x] UI：显示进度 X
-- [x] 单测覆盖新逻辑
-- [x] 修复：答对/答错均跳题，轮流循环
-- [x] 打包验证
-- **状态：** complete
+### 阶段 5：交付
+- [ ] Ralph 确认
+- [ ] Git commit
+- [ ] 交付给用户
+- **状态：** pending
 
 ## 关键问题
-1. 无
+（已全部在 brainstorming 中解决）
 
 ## 已做决策
 | 决策 | 理由 |
 |------|------|
-| 采用 Kivy + SQLite | 仅用 Python，数据本地，满足需求 |
-| 数据源使用 deepseek_csv_20260513_f1933c.csv | 用户已提供完整 20 种数据 |
-| 结构式图片使用 fig/*.png | 用户已提供并命名规则明确 |
+| 新增 `nature` 列而非复用 `formula` | 语义清晰、有迁移先例、保留扩展性 |
+| 使用 Kivy markup 模式而非拆分 Label | 不改 widget 层级，避免 Android `size_hint_y` 风险 |
+| 进度保持在第一行 | 用户选择 A |
+| 性质不带前缀标签 | 用户选择 A |
+| 字号 64/28 | 用户选择方案 C |
 
 ## 遇到的错误
-| 错误 | 尝试次数 | 解决方案 |
-|------|---------|---------|
-| session-catchup.py 路径缺失 | 3 | 记录为已知环境问题，继续手动更新规划文件 |
-| 模拟器闪退：ValueError None is not allowed for Label.font_name | 1 | 计划打包 CJK 字体并统一 font_name 兜底 |
+（暂无）
 
 ## 备注
-- 每次修改必须先 brainstorming，再 planning-with-files-zh，再 test-driven-development，结束后 ralph 确认。
-- 每次修改必须提交 git。
+- 严格按 AGENTS.md 流程：brainstorming → planning → TDD → ralph → commit
+- 改动顺序：CSV loader → DB migration → session → UI
+- Kivy 约束：不改 `size_hint_y`，不用 `None` 给 `font_name`

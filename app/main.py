@@ -111,6 +111,7 @@ class AminoStudyApp(App):
             font_name=ui_font_name,
             font_size=64,
             color=(0.12, 0.12, 0.12, 1),
+            markup=True,
         )
 
         options_box = BoxLayout(orientation="vertical", spacing=8, size_hint_y=0.30)

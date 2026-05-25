@@ -15,8 +15,8 @@ def insert_amino_acids(db_path: Path, records: Iterable[dict]) -> None:
         conn.executemany(
             """
             INSERT INTO amino_acids
-            (name_cn, name_en, abbr3, abbr1, image_path, formula)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (name_cn, name_en, abbr3, abbr1, image_path, formula, nature)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             [
                 (
@@ -26,6 +26,7 @@ def insert_amino_acids(db_path: Path, records: Iterable[dict]) -> None:
                     record["abbr1"],
                     record["image_path"],
                     record["formula"],
+                    record.get("nature", ""),
                 )
                 for record in records
             ],

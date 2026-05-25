@@ -1,79 +1,52 @@
 {
   "project": "Amino Study",
-  "branchName": "ralph/5-streak-daily-progress",
-  "description": "要求每个氨基酸连续答对5次才算今日完成，答错后每日进度和复习进度全部归零。每日新学配额5个氨基酸。",
+  "branchName": "ralph/nature-display",
+  "description": "在 quiz 题目中显示氨基酸「性质」（电荷/极性），两行布局：第一行名称+进度（font_size=64），第二行性质（font_size=28）。",
   "userStories": [
     {
       "id": "US-001",
-      "title": "DB schema 新增 daily_streak 和 daily_streak_date 字段",
-      "description": "在 learning_state 表中添加 daily_streak (0-5) 和 daily_streak_date 字段，用于追踪今日连续答对次数。",
+      "title": "DB schema：amino_acids 表新增 nature 列 + CSV loader 提取性质",
+      "description": "在 amino_acids 表中添加 nature TEXT NOT NULL DEFAULT '' 列，CSV loader 从「性质」列提取数据，repo INSERT 包含 nature 字段。",
       "acceptanceCriteria": [
-        "ALTER TABLE learning_state ADD COLUMN daily_streak INTEGER DEFAULT 0",
-        "ALTER TABLE learning_state ADD COLUMN daily_streak_date TEXT DEFAULT ''",
-        "migrate_add_daily_streak() 函数幂等（重复调用不报错）",
+        "amino_acids 表新增 nature TEXT NOT NULL DEFAULT '' 列",
+        "migrate_add_nature() 函数幂等（重复调用不报错）",
+        "app/data/loader.py 从 CSV 的「性质」列提取值",
+        "app/db/repo.py insert_amino_acids() 包含 nature 参数",
+        "app/bootstrap.py 启动时调用 migrate_add_nature()",
         "Tests pass"
       ],
       "priority": 1,
       "passes": true,
-      "notes": "已实现：app/db/schema.py: migrate_add_daily_streak()"
+      "notes": "已实现：app/db/schema.py: migrate_add_nature(), app/data/loader.py: nature 字段, app/db/repo.py: INSERT 含 nature, app/bootstrap.py: 调用 migrate_add_nature"
     },
     {
       "id": "US-002",
-      "title": "5连对答对逻辑：答对+1，答错归零",
-      "description": "修改 record_answer()，答对 daily_streak+=1，答错 daily_streak=0 且 right_streak=0。达到5后写入艾宾浩斯复习池。",
+      "title": "Session 服务传递 nature 到 question dict",
+      "description": "session.py 的 _fetch_items_by_ids() 查询包含 nature 列，question dict 包含 nature 字段。",
       "acceptanceCriteria": [
-        "答对：daily_streak +1",
-        "daily_streak == 5 时：right_streak 推进艾宾浩斯 + daily_plan.new_done += 1",
-        "答错：daily_streak = 0 且 right_streak = 0",
-        "每日首次答题时 daily_streak_date 与今天不匹配则自动清零",
+        "_fetch_items_by_ids() SELECT 包含 nature 列",
+        "question dict 中 nature 字段可用",
         "Tests pass"
       ],
       "priority": 2,
       "passes": true,
-      "notes": "已实现：app/db/learning_repo.py: record_answer(), get_daily_streak()"
+      "notes": "已实现：app/services/session.py: SELECT 新增 nature, question dict 新增 nature key"
     },
     {
       "id": "US-003",
-      "title": "Session 构建：过滤已完成项 + 配额控制",
-      "description": "build_session() 过滤 daily_streak >= 5 的氨基酸，并按 new_quota 控制当前活跃候选数量。新学会话不限初始候选数。",
+      "title": "UI 显示氨基酸性质（两行布局 + Kivy markup）",
+      "description": "build_question_prompt() 返回 Kivy markup 格式两行文本：[size=64]名称(英文) 进度：X[/size]\\n[size=28]性质[/size]，main.py 中 question_label 启用 markup=True。",
       "acceptanceCriteria": [
-        "build_session 过滤 daily_streak >= 5 的已完成项",
-        "新项候选池不限制数量（所有未学氨基酸均可选）",
-        "active_ids 受 new_quota - new_done 配额限制",
+        "第一行：中文名(英文名) 进度：X，font_size=64",
+        "第二行：性质，font_size=28",
+        "question_label.markup = True",
+        "Kivy markup 方括号转义（[ → &bl;, ] → &br;）",
+        "性质为空时第二行为空（不显示额外字符）",
         "Tests pass"
       ],
       "priority": 3,
       "passes": true,
-      "notes": "已实现：app/services/session.py, app/services/plan.py"
-    },
-    {
-      "id": "US-004",
-      "title": "答错/未完成时不跳题，留在同一氨基酸重新出题",
-      "description": "on_next 处理：streak < 5 时停留在当前氨基酸生成新随机格式题目，streak >= 5 时才进入下一个。",
-      "acceptanceCriteria": [
-        "答对后 streak < 5：同一氨基酸换随机格式出新题",
-        "答错后 streak = 0：同一氨基酸换随机格式出新题",
-        "streak >= 5：state.advance() 跳下一个",
-        "题型（abbr1/abbr3）每轮随机切换",
-        "Tests pass"
-      ],
-      "priority": 4,
-      "passes": true,
-        "notes": "已实现：app/main.py: on_next() 答对/答错均 state.advance()，轮完全部后 rebuild session 刷新 streak 并过滤已完成项。refresh_view() 动态获取 daily_streak 显示实时进度。"
-    },
-    {
-      "id": "US-005",
-      "title": "UI 显示当前进度",
-      "description": "题目旁显示 进度：X（X = 0~4），字号小于题目文字。",
-      "acceptanceCriteria": [
-        "题目文字末尾显示 进度：0~4",
-        "进度字号小于题目",
-        "进度随答题实时更新",
-        "Tests pass"
-      ],
-      "priority": 5,
-      "passes": true,
-      "notes": "已实现：app/screens/study_screen.py: build_question_prompt()"
+      "notes": "已实现：app/screens/study_screen.py: build_question_prompt(), app/main.py: markup=True"
     }
   ]
 }

@@ -52,6 +52,7 @@ def build_session(db_path: Path, *, now: datetime, rng_seed: int | None = None) 
                     "name_cn": candidate["name_cn"],
                     "name_en": candidate["name_en"],
                     "formula": candidate["formula"],
+                    "nature": candidate["nature"],
                 }
             )
 
@@ -83,7 +84,7 @@ def _fetch_items_by_ids(db_path: Path, ids: list[int]) -> list[dict]:
 
     placeholders = ",".join("?" for _ in ids)
     query = (
-        "SELECT id, name_cn, name_en, abbr3, abbr1, image_path, formula "
+        "SELECT id, name_cn, name_en, abbr3, abbr1, image_path, formula, nature "
         f"FROM amino_acids WHERE id IN ({placeholders})"
     )
     with sqlite3.connect(db_path) as conn:
@@ -98,6 +99,7 @@ def _fetch_items_by_ids(db_path: Path, ids: list[int]) -> list[dict]:
             "abbr1": row[4],
             "image_path": row[5],
             "formula": row[6],
+            "nature": row[7],
         }
         for row in rows
     ]

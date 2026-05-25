@@ -1,52 +1,47 @@
 # 发现与决策
 
 ## 需求
-- Android 学习 App，单人使用，数据本地
-- 记忆 20 种氨基酸：中文名、英文名、三字母/单字母缩写、结构式图片
-- 闪卡 + 测验（选择题 + 填空）
-- 每日新学固定 5 个
-- 复习按艾宾浩斯：1/2/4/7/15 天
-- 错题优先
-- 可重置学习进度
+- CSV 中新增了「性质」列，包含氨基酸的电荷/极性信息
+- 需要在题目下方以更小字号显示
+- 第一行字号保持64（不变），第二行字号28
+- 进度条保持在第一行
+- 性质不带前缀标签
 
 ## 研究发现
-- 数据源：deepseek_csv_20260513_f1933c.csv（5 列，含图片路径）
-- 图片路径规则：/Users/limbo/Project/aa_learn/fig/<单字母>.png
- - Android 运行需要将可写数据放在 App.user_data_dir，资源建议首次启动复制到该目录
- - 当前无法使用 adb/logcat，需在启动时写 crash.log 进行离线诊断
- - 需要最小 Kivy APK 验证 Android 16 + 天玑 9500 运行时可用性
- - 若最小 APK 仍闪退，需尝试仅 arm64-v8a 架构打包
- - 模拟器闪退已定位：Label.font_name 传入 None 会触发 ValueError
- - 计划打包 Noto Sans SC 并统一 font_name 兜底
-- Layout bug 根因：show_answer_area/hide_answer_area 动态修改 size_hint_y → Kivy BoxLayout 在 Android 上重布局导致子控件位置错乱（题目消失、选项跑位）
-- 解决方案：固定 size_hint_y 比例，仅用 opacity 切换可见性，永不动态改 size_hint_y
- - buildozer.spec 目前仅 include fig/*.png 和 CSV，字体需加入 include_patterns 才会打包
- - 当前字体资源位于 skills 目录，已被 buildozer 排除
 
-## 规划要点
-- 项目目录：app/（入口与配置）、app/screens（闪卡/测验/统计/设置）、app/services（调度/出题）、app/data（CSV 导入）、app/db（SQLite）、assets/、fig/、tests/
-- 数据表：amino_acids、learning_state、daily_plan
-- 开发计划：数据导入与 DB → 调度/出题逻辑 → UI → 测试与打包
+### CSV 现状
+- `deepseek_csv_20260513_f1933c.csv` 有 6 列：中文名、英文名、三字缩写、单字缩写、图片路径、性质
+- 性质值有 5 类：非极性脂肪族、碱性（带正电）、极性不带电、酸性（带负电）、芳香族
+- 现有 loader 的 `REQUIRED_FIELDS` 只有前 5 列，读取的 `分子式` 列不存在
+
+### 数据流
+```
+CSV (性质列) → loader.py (未读取) → DB amino_acids.formula (始终为"")
+                                                    ↓
+                                            session.py → question dict → UI
+```
+- `formula` 字段从 loader 到 DB 到 session 到 UI 整个链路都存在但值始终为空
+
+### Kivy Label 限制
+- 普通 Label 只支持单一字号
+- 实现多种字号需要 `markup=True` + `[size=XX]` 标签
+- 需要对文本中的 `[` 和 `]` 做转义
+
+### 已有迁移模式
+- `migrate_add_daily_streak()` 示范了 `ALTER TABLE ADD COLUMN` + `sqlite3.OperationalError` 捕获的幂等迁移
 
 ## 技术决策
 | 决策 | 理由 |
 |------|------|
-| Kivy + SQLite | 仅 Python 环境，满足本地数据与 UI 需求 |
-| 目录结构分层（screens/services/db/data） | 便于维护 UI 与逻辑边界 |
-| Android 采用 user_data_dir + 资源复制 | 避免 APK 只读路径导致启动崩溃 |
-
-## 遇到的问题
-| 问题 | 解决方案 |
-|------|---------|
-|      |         |
-
-## 资源
-- deepseek_csv_20260513_f1933c.csv
-- fig/*.png
+| 新增 `nature` 列而非复用 `formula` | 语义清晰、保留扩展性 |
+| Kivy markup 模式 | 单 Label 不改层级，避免 Android `size_hint_y` bug |
+| 转移 scheme：`[`→`&bl;` `]`→`&br;` | Kivy markup 的 BBcode 转义规则 |
+| `ALTER TABLE ADD COLUMN` 带默认值 | 保持与现有 streak 迁移一致的模式 |
 
 ## 视觉/浏览器发现
-- 无
+- 用户通过浏览器 mockup 选择了方案 C：字号 64/28 搭配
+- 方案 A (72/36) 和方案 B (80/40) 被否决
+- 方案 C 实际第一行字号与当前一致（64），第二行为 28
 
 ---
 *每执行2次查看/浏览器/搜索操作后更新此文件*
-*防止视觉信息丢失*

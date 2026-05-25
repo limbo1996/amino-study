@@ -58,6 +58,7 @@ def _load_from_csv(csv_path: Path, *, repo_root: Path | None) -> list[dict]:
                 "abbr1": row["单字缩写"].strip(),
                 "image_path": image_path,
                 "formula": row.get("分子式", "").strip(),
+                "nature": row.get("性质", "").strip(),
             }
             records.append(record)
     return records
@@ -73,5 +74,6 @@ def _load_embedded(repo_root: Path) -> list[dict]:
             "abbr1": item["abbr1"],
             "image_path": str(repo_root / "fig" / item["filename"]),
             "formula": "",
+            "nature": "",
         })
     return records

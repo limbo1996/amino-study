@@ -14,10 +14,14 @@ def build_header_text(plan: dict, *, index: int, total: int) -> str:
 
 
 def build_question_prompt(question: dict) -> str:
-    name_cn = question.get("name_cn", "")
-    name_en = question.get("name_en", "")
+    name_cn = question.get("name_cn", "").replace("[", "&bl;").replace("]", "&br;")
+    name_en = question.get("name_en", "").replace("[", "&bl;").replace("]", "&br;")
+    nature = question.get("nature", "").replace("[", "&bl;").replace("]", "&br;")
     streak = question.get("daily_streak", 0)
-    return f"{name_cn} ({name_en})  进度：{streak}"
+    return (
+        f"[size=64]{name_cn} ({name_en})  进度：{streak}[/size]\n"
+        f"[size=28]{nature}[/size]"
+    )
 
 
 def build_options_text(question: dict) -> str:

@@ -16,7 +16,8 @@ def init_db(db_path: Path) -> None:
                 abbr3 TEXT NOT NULL,
                 abbr1 TEXT NOT NULL,
                 image_path TEXT NOT NULL,
-                formula TEXT NOT NULL
+                formula TEXT NOT NULL,
+                nature TEXT NOT NULL DEFAULT ''
             )
             """
         )
@@ -55,6 +56,15 @@ def migrate_add_daily_streak(db_path: Path) -> None:
         with sqlite3.connect(db_path) as conn:
             conn.execute("ALTER TABLE learning_state ADD COLUMN daily_streak INTEGER NOT NULL DEFAULT 0")
             conn.execute("ALTER TABLE learning_state ADD COLUMN daily_streak_date TEXT NOT NULL DEFAULT ''")
+            conn.commit()
+    except sqlite3.OperationalError:
+        pass
+
+
+def migrate_add_nature(db_path: Path) -> None:
+    try:
+        with sqlite3.connect(db_path) as conn:
+            conn.execute("ALTER TABLE amino_acids ADD COLUMN nature TEXT NOT NULL DEFAULT ''")
             conn.commit()
     except sqlite3.OperationalError:
         pass

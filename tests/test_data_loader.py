@@ -16,6 +16,32 @@ class TestDataLoader(unittest.TestCase):
         self.assertIn("name_cn", records[0])
         self.assertIn("abbr1", records[0])
 
+    def test_loads_nature_from_csv(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            csv_path = temp_path / "data.csv"
+            csv_path.write_text(
+                "中文名,英文名,三字缩写,单字缩写,图片路径,性质\n"
+                "丙氨酸,Alanine,Ala,A,fig/A.png,非极性脂肪族\n"
+                "精氨酸,Arginine,Arg,R,fig/R.png,碱性（带正电）\n",
+                encoding="utf-8",
+            )
+
+            records = load_amino_acids(csv_path)
+
+            self.assertEqual(records[0]["nature"], "非极性脂肪族")
+            self.assertEqual(records[1]["nature"], "碱性（带正电）")
+
+    def test_loads_true_nature_from_real_csv(self):
+        repo_root = Path(__file__).resolve().parents[1]
+        csv_path = repo_root / "deepseek_csv_20260513_f1933c.csv"
+
+        records = load_amino_acids(csv_path)
+
+        alanine = next(r for r in records if r["abbr1"] == "A")
+        self.assertIn("nature", alanine)
+        self.assertTrue(alanine["nature"])
+
     def test_normalizes_image_paths_to_fig_dir(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)

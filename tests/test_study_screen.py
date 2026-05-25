@@ -69,6 +69,49 @@ class TestStudyScreen(unittest.TestCase):
         self.assertEqual(result, ["Ala", "Gly", "Val", "Ser"])
         self.assertEqual(len(result), 4)
 
+    def test_build_question_prompt_includes_nature_on_second_line(self):
+        question = {
+            "type": "choice",
+            "name_cn": "丙氨酸",
+            "name_en": "Alanine",
+            "nature": "非极性脂肪族",
+        }
+
+        prompt = build_question_prompt(question)
+
+        self.assertIn("[size=64]", prompt)
+        self.assertIn("丙氨酸", prompt)
+        self.assertIn("[size=28]", prompt)
+        self.assertIn("非极性脂肪族", prompt)
+        self.assertIn("\n", prompt)
+
+    def test_build_question_prompt_escapes_markup_brackets(self):
+        question = {
+            "type": "choice",
+            "name_cn": "测试[data]",
+            "name_en": "test",
+            "nature": "性质[info]",
+        }
+
+        prompt = build_question_prompt(question)
+
+        self.assertNotIn("测试[data]", prompt)
+        self.assertNotIn("性质[info]", prompt)
+        self.assertIn("&bl;", prompt)
+        self.assertIn("&br;", prompt)
+
+    def test_build_question_prompt_without_nature_shows_empty_second_line(self):
+        question = {
+            "type": "choice",
+            "name_cn": "甘氨酸",
+            "name_en": "Glycine",
+        }
+
+        prompt = build_question_prompt(question)
+
+        self.assertIn("甘氨酸", prompt)
+        self.assertIn("[size=28]", prompt)
+
     def test_check_answer_correct(self):
         question = {"answer": "Ala"}
 
